@@ -1,0 +1,400 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.login-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.login-image-side {
+  flex: 1.5;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.login-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay-text {
+  position: absolute;
+  bottom: 50px;
+  left: 50px;
+  color: white;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  max-width: 80%;
+}
+
+.overlay-text h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.overlay-text p {
+  font-size: 1.2rem;
+  margin-top: 0;
+}
+
+.login-form-side {
+  flex: 1;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  height: 100vh;
+  padding: 0;
+}
+
+:host ::ng-deep .p-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  width: 95%;
+  max-width: 600px;
+  margin: 0;
+}
+
+:host ::ng-deep .p-card .p-card-body {
+  padding: 2rem;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.logo {
+  height: 60px;
+  margin-bottom: 1rem;
+}
+
+.login-header h1 {
+  font-weight: 600;
+  color: #333;
+  margin-top: 0.5rem;
+  font-size: 1.8rem;
+}
+
+p-toast {
+  width: 100%;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.p-fluid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 0.8vh;
+}
+
+.field,
+.field-checkbox,
+.login-footer {
+  width: 100%;
+  max-width: 90%;
+  margin-bottom: 1.25rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.p-input-icon-left {
+  width: 100%;
+}
+:host ::ng-deep .p-password.p-invalid .p-inputtext {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 5px rgba(220, 53, 69, 0.5) !important;
+}
+
+.p-input-icon-left input,
+:host ::ng-deep .p-password input {
+  width: 100% !important;
+  height: 2.75rem;
+  border-radius: 6px;
+}
+
+:host ::ng-deep .p-password {
+  width: 100% !important;
+}
+
+.p-input-icon-left i {
+  left: 0.75rem;
+  color: #6c757d;
+}
+
+small.p-error {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.field-checkbox {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start;
+}
+
+.field-checkbox label {
+  margin-left: 0.5rem;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.toggle-form-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 10%;
+  padding: 2vh;
+  gap: 10%;
+}
+
+.login-footer .p-button {
+  width: 100%;
+  height: 2.75rem;
+  font-weight: 600;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+.forgot-password {
+  text-align: center;
+  margin-top: 1.25rem;
+  width: 100%;
+}
+
+.forgot-password a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.forgot-password a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+input,
+button {
+  transition: all 0.2s ease;
+}
+
+:host ::ng-deep .p-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.25);
+}
+
+.form-container {
+  padding: 0;
+  box-shadow: none;
+  max-height: none;
+  height: auto;
+  overflow: visible;
+  width: 60%;
+}
+
+/* Media Queries para responsividad */
+
+/* Tablets y dispositivos medianos */
+@media screen and (max-width: 1400px) {
+  .login-container {
+    flex-direction: row;
+  }
+
+  .login-image-side {
+    flex: 1;
+  }
+  
+  .login-form-side {
+    flex: 1;
+  }
+  
+  .form-container {
+    width: 85%;
+  }
+  
+  .overlay-text h2 {
+    font-size: 1.8rem;
+  }
+  
+  .overlay-text p {
+    font-size: 1.1rem;
+  }
+  
+  :host ::ng-deep .p-card .p-card-body {
+    padding: 1.75rem;
+  }
+}
+
+/* Dispositivos móviles */
+@media screen and (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    position: absolute;
+  }
+
+  .login-image-side {
+    flex: 0 0 30vh;
+    max-height: 30vh;
+  }
+
+  .login-form-side {
+    flex: 0 0 70vh;
+    height: 70vh;
+    padding: 0;
+  }
+
+  :host ::ng-deep .p-card {
+    width: 95%;
+    max-width: none;
+    margin-top: -20px;
+  }
+
+  :host ::ng-deep .p-card .p-card-body {
+    padding: 1.5rem;
+  }
+
+  .overlay-text {
+    left: 20px;
+    bottom: 20px;
+    max-width: 90%;
+  }
+
+  .overlay-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .overlay-text p {
+    font-size: 1rem;
+  }
+  
+  .toggle-form-buttons {
+    padding: 1vh;
+    margin-bottom: 5%;
+  }
+  
+  .login-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .logo {
+    height: 50px;
+  }
+  
+  .form-container {
+    width: 100%;
+  }
+}
+
+/* Dispositivos móviles muy pequeños */
+@media screen and (max-width: 480px) {
+  .login-image-side {
+    flex: 0 0 25vh;
+    max-height: 25vh;
+  }
+
+  .login-form-side {
+    flex: 0 0 75vh;
+  }
+  
+  .overlay-text {
+    left: 15px;
+    bottom: 15px;
+  }
+  
+  .overlay-text h2 {
+    font-size: 1.3rem;
+  }
+  
+  .overlay-text p {
+    font-size: 0.9rem;
+  }
+  
+  :host ::ng-deep .p-card .p-card-body {
+    padding: 1.25rem;
+  }
+  
+  .login-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .toggle-form-buttons {
+    gap: 5%;
+  }
+  
+  .field, .field-checkbox, .login-footer {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Para dispositivos con altura muy reducida */
+@media screen and (max-height: 600px) {
+  .login-image-side {
+    flex: 0 0 20vh;
+    max-height: 20vh;
+  }
+  
+  .login-form-side {
+    flex: 0 0 80vh;
+  }
+  
+  .login-header {
+    margin-bottom: 1rem;
+  }
+  
+  .login-header h1 {
+    font-size: 1.4rem;
+  }
+  
+  .logo {
+    height: 40px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .field, .field-checkbox, .login-footer {
+    margin-bottom: 0.8rem;
+  }
+  
+  .toggle-form-buttons {
+    margin-bottom: 3%;
+    padding: 1vh;
+  }
+}
