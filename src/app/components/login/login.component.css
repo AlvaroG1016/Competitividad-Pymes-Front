@@ -365,36 +365,3 @@ button {
   }
 }
 
-/* Para dispositivos con altura muy reducida */
-@media screen and (max-height: 600px) {
-  .login-image-side {
-    flex: 0 0 20vh;
-    max-height: 20vh;
-  }
-  
-  .login-form-side {
-    flex: 0 0 80vh;
-  }
-  
-  .login-header {
-    margin-bottom: 1rem;
-  }
-  
-  .login-header h1 {
-    font-size: 1.4rem;
-  }
-  
-  .logo {
-    height: 40px;
-    margin-bottom: 0.5rem;
-  }
-  
-  .field, .field-checkbox, .login-footer {
-    margin-bottom: 0.8rem;
-  }
-  
-  .toggle-form-buttons {
-    margin-bottom: 3%;
-    padding: 1vh;
-  }
-}

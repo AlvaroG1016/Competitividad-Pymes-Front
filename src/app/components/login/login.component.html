@@ -3,7 +3,7 @@
   <div class="login-image-side">
     <div class="image-container">
       <img
-        src="assets/images/login-image.jpg"
+        src="assets/faca12.jpg"
         alt="Login Image"
         class="login-image"
       />
@@ -53,7 +53,7 @@
       </div>
 
       <!-- Formulario de Inicio de Sesión -->
-      <form *ngIf="isLoginMode" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <form *ngIf="isLoginMode" [formGroup]="loginForm" (ngSubmit)="onLogin()">
         <div class="p-fluid">
           <div class="field">
             <span class="p-input-icon-left">
@@ -103,6 +103,12 @@
             >
               Contraseña es requerida
             </small>
+            <small
+            class="text-danger"
+            style="color: brown"
+            *ngIf="loginForm.get('hasErrorPassword')?.value"
+            >Usuario o contraseña incorrectos.</small
+          >
           </div>
 
           <div class="login-footer">

@@ -23,7 +23,8 @@ import { FloatLabelModule } from "primeng/floatlabel"
 import { CardModule } from "primeng/card"
 import { TooltipModule } from 'primeng/tooltip';
 
-
+import { RouterModule } from '@angular/router'; 
+import { provideHttpClient } from '@angular/common/http'; 
 
 // PrimeNG Modules
 import { PasswordModule } from 'primeng/password';
@@ -56,7 +57,8 @@ import { MyPreset } from '../mytheme';
     PasswordModule,
     MessageModule,
     RippleModule,
-    TooltipModule
+    TooltipModule,
+    RouterModule
   ],
   providers: [
     provideAnimationsAsync(),
@@ -70,9 +72,10 @@ import { MyPreset } from '../mytheme';
                 baseColor: '#007ad9',
               }
           }
-      }
-  }),
-  MessageService
+      },
+    }),
+    MessageService,
+    provideHttpClient()
   ],
   bootstrap: [AppComponent]
 })
