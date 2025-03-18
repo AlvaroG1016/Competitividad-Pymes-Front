@@ -116,7 +116,7 @@ form {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 0.8vh;
+  gap: 2.8vh;
 }
 
 .field,
@@ -228,7 +228,7 @@ button {
   max-height: none;
   height: auto;
   overflow: visible;
-  width: 60%;
+  width: 80%;
 }
 
 /* Media Queries para responsividad */
@@ -365,3 +365,9 @@ button {
   }
 }
 
+.card{
+  width: 100%;
+}
+.steps{
+  margin-bottom: 1rem;
+}

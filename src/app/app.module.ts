@@ -32,6 +32,7 @@ import { PasswordModule } from 'primeng/password';
 import { MessageModule } from 'primeng/message';
 import { RippleModule } from 'primeng/ripple';
 import { MyPreset } from '../mytheme';
+import { StepsModule } from 'primeng/steps';
 
 
 
@@ -58,7 +59,8 @@ import { MyPreset } from '../mytheme';
     MessageModule,
     RippleModule,
     TooltipModule,
-    RouterModule
+    RouterModule,
+    StepsModule
   ],
   providers: [
     provideAnimationsAsync(),

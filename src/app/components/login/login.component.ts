@@ -19,16 +19,20 @@ export class LoginComponent {
   loginForm!: FormGroup;
   registerForm!: FormGroup;
 
+  activeIndex = 0; // Índice del paso activo
+  items = [
+    { label: 'Información de la Empresa' },
+    { label: 'Datos del Usuario' },
+  ];
+
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private authService : AuthService,
-    private router: Router,
-
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-
     const API_TOKEN = localStorage.getItem(environment.localStoragetoken);
     if (API_TOKEN) {
       this.authService.logout();
@@ -51,6 +55,11 @@ export class LoginComponent {
     });
   }
 
+  // Cambiar el índice del paso activo
+  onActiveIndexChange(event: number): void {
+    this.activeIndex = event;
+  }
+
   // Alternar al formulario de inicio de sesión
   switchToLogin(): void {
     this.isLoginMode = true;
@@ -62,34 +71,46 @@ export class LoginComponent {
   }
 
   // Manejar el envío del formulario de inicio de sesión
-  onSubmit(): void {
+  async onLogin() {
     this.submitted = true;
-
-    if (this.loginForm.invalid) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Por favor, complete todos los campos requeridos',
-      });
-      return;
-    }
-
     this.loading = true;
-    console.log('Datos de inicio de sesión:', this.loginForm.value);
-    // Aquí puedes agregar la lógica para autenticar al usuario
+
+    const formData = this.loginForm.value;
+    try {
+      const res = await this.authService.login(formData.username, formData.password);
+      if (res.ok) {
+        this.loading = false;
+        this.authService.setAuthentication(true);
+        this.router.navigateByUrl(`/home`);
+      }
+    } catch (error: any) {
+      this.loading = false;
+      this.clearLoginErrors();
+      this.handleLoginErrors(error.error.message);
+    }
   }
 
   // Manejar el envío del formulario de registro
-  onRegister(): void {
+  async onRegister() {
     this.submitted = true;
-
-    if (this.registerForm.invalid) {
-      return;
-    }
-
     this.loading = true;
-    console.log('Datos de registro:', this.registerForm.value);
-    // Aquí puedes agregar la lógica para registrar al usuario
+
+    const formData = this.registerForm.value;
+    try {
+      const res = await this.authService.register(formData);
+      if (res.ok) {
+        this.loading = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Empresa creada exitosamente',
+          detail: 'Ya puede iniciar sesión con los datos registrados',
+        });
+      }
+    } catch (error: any) {
+      this.loading = false;
+      this.clearLoginErrors();
+      this.handleLoginErrors(error.error.message);
+    }
   }
 
   // Accesores para facilitar el acceso a los controles del formulario
@@ -101,64 +122,6 @@ export class LoginComponent {
     return this.registerForm.controls;
   }
 
-
-
-
-
-  async onLogin() {
-    debugger
-    this.submitted = true;
-    this.loading = true;
-
-    const formData = this.loginForm.value;
-    try {
-      const res = await this.authService.login(
-        formData.username,
-        formData.password
-      );
-      if (res.ok) {
-        this.loading = false;
-        this.authService.setAuthentication(true);
-        this.router.navigateByUrl(`/home`);
-
-      } else {
-        debugger;
-        this.loading = false;
-
-         let mensajeError = "<ul>";
-        res.ValidationErrors.forEach((error: any) => {
-          mensajeError += `<li>${error}</li>`;
-        });
-        mensajeError += "</ul>";
- 
-    /*             const modalData: ModalData = {
-                  title: 'Error de autenticación',
-                  message: mensajeError,
-                  buttonLabel: 'Aceptar',
-                  type: 'error'
-                }; */
-            
-   /*      const dialogRef = this.dialog.open(ModalNotifyComponent, {
-          width: '400px',
-          data: modalData
-        }); */
-
-
-      }
-    } catch (error: any) {
-      this.loading = false;
-
-      this.clearLoginErrors();
-
-      this.handleLoginErrors(error.error.message);
-    
-    }
-  }
-
-
-
-
-
   private clearLoginErrors() {
     this.loginForm.get('hasErrorUserName')?.setValue(false);
     this.loginForm.get('hasErrorPassword')?.setValue(false);
@@ -167,19 +130,14 @@ export class LoginComponent {
   }
 
   private handleLoginErrors(errorMessage: string) {
-    debugger
     const errorMapping = {
- /*      "Correo o contraseña incorrectos": {
-        errorKey: 'hasErrorPassword',
-        controlKey: 'userName',
-      }, */
       'Correo o contraseña incorrectos': {
         errorKey: 'hasErrorPassword',
         controlKey: 'password',
       },
       'Usuario se encuentra inactivo': {
         errorKey: 'hasErrorInvalid',
-        controlKey: 'userName',
+        controlKey: 'username',
       },
       'Empresa no cuenta con la ultima versión, por favor comuniquese con el administrador': {
         errorKey: 'hasErrorCompany',
@@ -187,9 +145,7 @@ export class LoginComponent {
       },
     };
 
-    for (const [key, { errorKey, controlKey }] of Object.entries(
-      errorMapping
-    )) {
+    for (const [key, { errorKey, controlKey }] of Object.entries(errorMapping)) {
       if (errorMessage.includes(key)) {
         this.loginForm.get(errorKey)?.setValue(true);
         this.loginForm.get(controlKey)?.markAsTouched();
@@ -197,8 +153,4 @@ export class LoginComponent {
       }
     }
   }
-
-
-
-
 }

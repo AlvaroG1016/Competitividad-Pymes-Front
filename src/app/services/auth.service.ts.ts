@@ -10,7 +10,7 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AuthService {
   private apiAuth = environment.apiUrl + 'Auth/Login'; 
-  private apiUrl = environment.apiUrl;
+  private apiRegister = environment.apiUrl + 'Empresa/CrearEmpresa';
   private localStorageToken = environment.localStoragetoken;
   private isLoggedIn = false;
 
@@ -27,31 +27,17 @@ export class AuthService {
     const response = await lastValueFrom(this.http.post<any>(this.apiAuth, body, httpOptions));
     return response;
   }
-/* 
-  async getExtraData(IdUsuario: number, IdEmpresa: number): Promise<any> {
-    const body = { IdUsuario: IdUsuario, IdEmpresa: IdEmpresa};
+  async register(body:any): Promise<any> {
+    
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
     };
 
-    const response = await lastValueFrom(this.http.post<any>( AppData.API_URL + 'Auth/GetExtraData', body, httpOptions));
+    const response = await lastValueFrom(this.http.post<any>(this.apiRegister, body, httpOptions));
     return response;
-  } */
-
-  // async listEmpresas(username: string): Promise<any> {
-  //   //const body = { user: username };
-  //   const httpOptions = {
-  //     headers: new HttpHeaders({
-  //       'Content-Type': 'application/json',
-  //       'X-API-Key': AppData.API_KEY
-  //     }),
-  //   };
-
-  //   const response = await lastValueFrom(this.http.post<any>(AppData.API_URL + 'Auth/GetListEmpresa?user='+username, null, httpOptions));
-  //   return response;
-  // }
+  }
 
   isAuthenticated(): boolean {
     const token = localStorage.getItem(this.localStorageToken);

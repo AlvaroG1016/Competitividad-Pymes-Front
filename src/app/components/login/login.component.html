@@ -2,11 +2,7 @@
   <!-- Lado izquierdo: Imagen decorativa -->
   <div class="login-image-side">
     <div class="image-container">
-      <img
-        src="assets/faca12.jpg"
-        alt="Login Image"
-        class="login-image"
-      />
+      <img src="assets/faca12.jpg" alt="Login Image" class="login-image" />
       <div class="overlay-text">
         <h2>¡Bienvenido a nuestra aplicación!</h2>
         <p>
@@ -104,11 +100,11 @@
               Contraseña es requerida
             </small>
             <small
-            class="text-danger"
-            style="color: brown"
-            *ngIf="loginForm.get('hasErrorPassword')?.value"
-            >Usuario o contraseña incorrectos.</small
-          >
+              class="text-danger"
+              style="color: brown"
+              *ngIf="loginForm.get('hasErrorPassword')?.value"
+              >Usuario o contraseña incorrectos.</small
+            >
           </div>
 
           <div class="login-footer">
@@ -126,170 +122,189 @@
       </form>
 
       <!-- Formulario de Registro -->
+      <!-- Formulario de Registro con Angular Steps -->
       <form
         *ngIf="!isLoginMode"
         [formGroup]="registerForm"
         (ngSubmit)="onRegister()"
       >
-        <div class="p-fluid">
-          <div class="field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-user"></i>
-              <p-floatlabel>
-                <input
-                  id="name"
-                  type="text"
-                  pInputText
-                  formControlName="Nombre"
-                  [ngClass]="{
-                    'ng-invalid ng-dirty':
-                      r['Nombre'].invalid && r['Nombre'].touched
-                  }"
-                />
-                <label for="name">Nombre Empresa</label>
-              </p-floatlabel>
-            </span>
-            <small
-              *ngIf="r['Nombre'].touched && r['Nombre'].errors?.['required']"
-              class="font-bold"
-            >
-              El nombre de la empresa es requerido
-            </small>
-          </div>
-          <div class="field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-user"></i>
-              <p-floatlabel>
-                <input
-                  id="sector"
-                  type="text"
-                  pInputText
-                  formControlName="Sector"
-                  [ngClass]="{
-                    'ng-invalid ng-dirty':
-                      r['Sector'].invalid && r['Sector'].touched
-                  }"
-                />
-                <label for="sector">Sector Empresa</label>
-              </p-floatlabel>
-            </span>
-            <small
-              *ngIf="r['Sector'].touched && r['Sector'].errors?.['required']"
-              class="font-bold"
-            >
-              El sector de la empresa es requerido
-            </small>
-          </div>
+        <div class="card">
+          <!-- Steps Component -->
+          <p-steps
+            [model]="items"
+            [readonly]="false"
+            [(activeIndex)]="activeIndex"
+            (activeIndexChange)="onActiveIndexChange($event)"
+            class="steps"
+          ></p-steps>
 
-          <div class="field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-envelope"></i>
-              <p-floatlabel>
-                <input
-                  id="email"
-                  type="email"
-                  pInputText
-                  formControlName="CorreoUsuario"
-                  [ngClass]="{
-                    'ng-invalid ng-dirty':
-                      r['CorreoUsuario'].invalid && r['CorreoUsuario'].touched
-                  }"
-                />
-                <label for="email">Correo electrónico</label>
-              </p-floatlabel>
-            </span>
-            <small
-              *ngIf="r['CorreoUsuario'].errors?.['required'] && r['CorreoUsuario'].touched"
-              class="font-bold"
-            >
-              Correo electrónico es requerido
-            </small>
-          </div>
-
-          <div class="field">
-            <span class="p-input-icon-left">
-              <p-floatlabel>
-                <i class="pi pi-lock"></i>
-                <p-password
-                  id="PasswordUsuario"
-                  formControlName="PasswordUsuario"
-                  [toggleMask]="true"
-                  [feedback]="true"
-                  mediumLabel="Media"
-                  strongLabel="Fuerte"
-                  weakLabel="Débil"
-                  promptLabel="Digite una contraseña"
-                  [ngClass]="{
-                    'ng-invalid ng-dirty':
-                      r['PasswordUsuario'].invalid && r['PasswordUsuario'].touched
-                  }"
+          <!-- Contenido dinámico basado en el paso activo -->
+          <div *ngIf="activeIndex === 0">
+            <h3>Información de la Empresa</h3>
+            <div class="p-fluid">
+              <div class="field">
+                <span class="p-input-icon-left">
+                  <i class="pi pi-user"></i>
+                  <p-floatlabel>
+                    <input
+                      id="name"
+                      type="text"
+                      pInputText
+                      formControlName="Nombre"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          r['Nombre'].invalid && r['Nombre'].touched
+                      }"
+                    />
+                    <label for="name">Nombre Empresa</label>
+                  </p-floatlabel>
+                </span>
+                <small
+                  *ngIf="r['Nombre'].touched && r['Nombre'].errors?.['required']"
+                  class="font-bold"
                 >
-                </p-password>
-                <label for="PasswordUsuario">Contraseña</label>
-              </p-floatlabel>
-            </span>
-            <small
-              *ngIf="r['PasswordUsuario'].errors?.['required'] && r['PasswordUsuario'].touched"
-              class="p-error"
-            >
-              Contraseña es requerida
-            </small>
+                  El nombre de la empresa es requerido
+                </small>
+              </div>
+              <div class="field">
+                <span class="p-input-icon-left">
+                  <i class="pi pi-user"></i>
+                  <p-floatlabel>
+                    <input
+                      id="sector"
+                      type="text"
+                      pInputText
+                      formControlName="Sector"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          r['Sector'].invalid && r['Sector'].touched
+                      }"
+                    />
+                    <label for="sector">Sector Empresa</label>
+                  </p-floatlabel>
+                </span>
+                <small
+                  *ngIf="r['Sector'].touched && r['Sector'].errors?.['required']"
+                  class="font-bold"
+                >
+                  El sector de la empresa es requerido
+                </small>
+              </div>
+              <div class="field">
+                <span class="p-input-icon-left">
+                  <i class="pi pi-envelope"></i>
+                  <p-floatlabel>
+                    <input
+                      id="Clasificacion"
+                      type="text"
+                      pInputText
+                      formControlName="Clasificacion"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          r['Clasificacion'].invalid &&
+                          r['Clasificacion'].touched
+                      }"
+                    />
+                    <label for="Clasificacion">Clasificación Empresa</label>
+                  </p-floatlabel>
+                </span>
+                <small
+                  *ngIf="r['Clasificacion'].touched && r['Clasificacion'].errors?.['required']"
+                  class="font-bold"
+                >
+                  Clasificación Empresa es requerida
+                </small>
+              </div>
+              <div class="field">
+                <span class="p-input-icon-left">
+                  <i class="pi pi-envelope"></i>
+                  <p-floatlabel>
+                    <input
+                      id="Estado"
+                      type="text"
+                      pInputText
+                      formControlName="Estado"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          r['Estado'].invalid && r['Estado'].touched
+                      }"
+                    />
+                    <label for="Estado">Estado Empresa</label>
+                  </p-floatlabel>
+                </span>
+                <small
+                  *ngIf="r['Estado'].touched && r['Estado'].errors?.['required']"
+                  class="font-bold"
+                >
+                  Estado Empresa es requerido
+                </small>
+              </div>
+            </div>
           </div>
 
-
-          <div class="field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-envelope"></i>
-              <p-floatlabel>
-                <input
-                  id="Clasificacion"
-                  type="text"
-                  pInputText
-                  formControlName="Clasificacion"
-                  [ngClass]="{
-                    'ng-invalid ng-dirty':
-                      r['Clasificacion'].invalid && r['Clasificacion'].touched
-                  }"
-                />
-                <label for="Clasificacion">Clasificacion Empresa</label>
-              </p-floatlabel>
-            </span>
-            <small
-              *ngIf="r['Clasificacion'].errors?.['required'] && r['Clasificacion'].touched"
-              class="font-bold"
-            >
-            Clasificacion Empresa es requerido
-            </small>
+          <div *ngIf="activeIndex === 1">
+            <h3>Datos del Usuario</h3>
+            <div class="p-fluid">
+              <div class="field">
+                <span class="p-input-icon-left">
+                  <i class="pi pi-envelope"></i>
+                  <p-floatlabel>
+                    <input
+                      id="email"
+                      type="email"
+                      pInputText
+                      formControlName="CorreoUsuario"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          r['CorreoUsuario'].invalid &&
+                          r['CorreoUsuario'].touched
+                      }"
+                    />
+                    <label for="email">Correo electrónico</label>
+                  </p-floatlabel>
+                </span>
+                <small
+                  *ngIf="r['CorreoUsuario'].errors?.['required'] && r['CorreoUsuario'].touched"
+                  class="font-bold"
+                >
+                  Correo electrónico es requerido
+                </small>
+              </div>
+              <div class="field">
+                <span class="p-input-icon-left">
+                  <p-floatlabel>
+                    <i class="pi pi-lock"></i>
+                    <p-password
+                      id="PasswordUsuario"
+                      formControlName="PasswordUsuario"
+                      [toggleMask]="true"
+                      [feedback]="true"
+                      mediumLabel="Media"
+                      strongLabel="Fuerte"
+                      weakLabel="Débil"
+                      promptLabel="Digite una contraseña"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          r['PasswordUsuario'].invalid &&
+                          r['PasswordUsuario'].touched
+                      }"
+                    >
+                    </p-password>
+                    <label for="PasswordUsuario">Contraseña</label>
+                  </p-floatlabel>
+                </span>
+                <small
+                  *ngIf="r['PasswordUsuario'].errors?.['required'] && r['PasswordUsuario'].touched"
+                  class="p-error"
+                >
+                  Contraseña es requerida
+                </small>
+              </div>
+            </div>
           </div>
 
-
-          <div class="field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-envelope"></i>
-              <p-floatlabel>
-                <input
-                  id="Estado"
-                  type="text"
-                  pInputText
-                  formControlName="Estado"
-                  [ngClass]="{
-                    'ng-invalid ng-dirty':
-                      r['Estado'].invalid && r['Estado'].touched
-                  }"
-                />
-                <label for="Estado">Estado Empresa</label>
-              </p-floatlabel>
-            </span>
-            <small
-              *ngIf="r['Estado'].errors?.['required'] && r['Estado'].touched"
-              class="font-bold"
-            >
-            Estado Empresa es requerido
-            </small>
-          </div>
-
-
-          <div class="login-footer">
+          <!-- Botón de registro -->
+          <div class="login-footer" *ngIf="activeIndex === 1">
             <button
               pButton
               type="submit"
