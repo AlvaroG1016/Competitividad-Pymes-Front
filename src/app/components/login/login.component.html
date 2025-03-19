@@ -140,17 +140,17 @@
                   id="name"
                   type="text"
                   pInputText
-                  formControlName="Nombre"
+                  formControlName="nombre"
                   [ngClass]="{
                     'ng-invalid ng-dirty':
-                      r['Nombre'].invalid && r['Nombre'].touched
+                      r['nombre'].invalid && r['nombre'].touched
                   }"
                 />
                 <label for="name">Nombre Empresa</label>
               </p-floatlabel>
             </span>
             <small
-              *ngIf="r['Nombre'].touched && r['Nombre'].errors?.['required']"
+              *ngIf="r['nombre'].touched && r['nombre'].errors?.['required']"
               class="font-bold"
             >
               El nombre de la empresa es requerido
@@ -164,17 +164,17 @@
                   id="sector"
                   type="text"
                   pInputText
-                  formControlName="Sector"
+                  formControlName="sector"
                   [ngClass]="{
                     'ng-invalid ng-dirty':
-                      r['Sector'].invalid && r['Sector'].touched
+                      r['sector'].invalid && r['sector'].touched
                   }"
                 />
                 <label for="sector">Sector Empresa</label>
               </p-floatlabel>
             </span>
             <small
-              *ngIf="r['Sector'].touched && r['Sector'].errors?.['required']"
+              *ngIf="r['sector'].touched && r['sector'].errors?.['required']"
               class="font-bold"
             >
               El sector de la empresa es requerido
@@ -189,17 +189,17 @@
                   id="email"
                   type="email"
                   pInputText
-                  formControlName="CorreoUsuario"
+                  formControlName="correoUsuario"
                   [ngClass]="{
                     'ng-invalid ng-dirty':
-                      r['CorreoUsuario'].invalid && r['CorreoUsuario'].touched
+                      r['correoUsuario'].invalid && r['correoUsuario'].touched
                   }"
                 />
                 <label for="email">Correo electrónico</label>
               </p-floatlabel>
             </span>
             <small
-              *ngIf="r['CorreoUsuario'].errors?.['required'] && r['CorreoUsuario'].touched"
+              *ngIf="r['correoUsuario'].errors?.['required'] && r['correoUsuario'].touched"
               class="font-bold"
             >
               Correo electrónico es requerido
@@ -212,7 +212,7 @@
                 <i class="pi pi-lock"></i>
                 <p-password
                   id="PasswordUsuario"
-                  formControlName="PasswordUsuario"
+                  formControlName="passwordUsuario"
                   [toggleMask]="true"
                   [feedback]="true"
                   mediumLabel="Media"
@@ -221,7 +221,7 @@
                   promptLabel="Digite una contraseña"
                   [ngClass]="{
                     'ng-invalid ng-dirty':
-                      r['PasswordUsuario'].invalid && r['PasswordUsuario'].touched
+                      r['passwordUsuario'].invalid && r['passwordUsuario'].touched
                   }"
                 >
                 </p-password>
@@ -229,7 +229,7 @@
               </p-floatlabel>
             </span>
             <small
-              *ngIf="r['PasswordUsuario'].errors?.['required'] && r['PasswordUsuario'].touched"
+              *ngIf="r['passwordUsuario'].errors?.['required'] && r['passwordUsuario'].touched"
               class="p-error"
             >
               Contraseña es requerida
@@ -245,17 +245,17 @@
                   id="Clasificacion"
                   type="text"
                   pInputText
-                  formControlName="Clasificacion"
+                  formControlName="clasificacion"
                   [ngClass]="{
                     'ng-invalid ng-dirty':
-                      r['Clasificacion'].invalid && r['Clasificacion'].touched
+                      r['clasificacion'].invalid && r['clasificacion'].touched
                   }"
                 />
                 <label for="Clasificacion">Clasificacion Empresa</label>
               </p-floatlabel>
             </span>
             <small
-              *ngIf="r['Clasificacion'].errors?.['required'] && r['Clasificacion'].touched"
+              *ngIf="r['clasificacion'].errors?.['required'] && r['clasificacion'].touched"
               class="font-bold"
             >
             Clasificacion Empresa es requerido
@@ -271,17 +271,17 @@
                   id="Estado"
                   type="text"
                   pInputText
-                  formControlName="Estado"
+                  formControlName="estado"
                   [ngClass]="{
                     'ng-invalid ng-dirty':
-                      r['Estado'].invalid && r['Estado'].touched
+                      r['estado'].invalid && r['estado'].touched
                   }"
                 />
                 <label for="Estado">Estado Empresa</label>
               </p-floatlabel>
             </span>
             <small
-              *ngIf="r['Estado'].errors?.['required'] && r['Estado'].touched"
+              *ngIf="r['estado'].errors?.['required'] && r['estado'].touched"
               class="font-bold"
             >
             Estado Empresa es requerido

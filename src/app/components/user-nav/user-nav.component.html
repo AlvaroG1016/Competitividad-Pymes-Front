@@ -1,0 +1,19 @@
+<div class="user-nav">
+    <div class="user-info">
+      <span class="user-name">{{userNameSource.getValue()}}</span>
+      <small class="user-role">{{userRoleSource.getValue()}}</small>
+      <!-- <span class="user-name">John Doe</span>
+      <small class="user-role">Administrador</small> -->
+    </div>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span style="font-size: 1.6vh !important; ">Cerrar Sesión</span>
+      </button>
+    </mat-menu>
+    
+  </div>
+  

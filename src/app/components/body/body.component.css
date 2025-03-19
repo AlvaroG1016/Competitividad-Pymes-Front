@@ -1,0 +1,22 @@
+.body{
+    width: calc(100% - 2.6rem);
+    height: auto;
+    margin-left: 2.6rem;
+    z-index: 0;
+    position: relative;
+    /* top: -5vh; */
+    transition: all .5s ease;
+    background: #fff;
+/*     padding: 2.5rem;
+ */
+}
+
+.body-trimmed{
+    width: calc(100% - 16.5625rem);
+    margin-left: 16.5625rem;
+}
+
+.body-md-screen{
+    width: calc(100% - 5rem);
+    margin-left: 5rem;
+}

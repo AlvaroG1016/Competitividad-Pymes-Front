@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service.ts';
 import { Router } from '@angular/router';
+import { CommonsLibService } from '../../services/commons-lib.service.ts';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +25,7 @@ export class LoginComponent {
     private messageService: MessageService,
     private authService : AuthService,
     private router: Router,
+    private commonService: CommonsLibService
 
   ) {}
 
@@ -42,12 +44,12 @@ export class LoginComponent {
     });
 
     this.registerForm = this.fb.group({
-      Nombre: ['', Validators.required],
-      Sector: ['', Validators.required],
-      CorreoUsuario: ['', [Validators.required, Validators.email]],
-      PasswordUsuario: ['', Validators.required],
-      Clasificacion: ['', Validators.required],
-      Estado: ['', Validators.required],
+      nombre: ['', Validators.required],
+      sector: ['', Validators.required],
+      correoUsuario: ['', [Validators.required, Validators.email]],
+      passwordUsuario: ['', Validators.required],
+      clasificacion: ['', Validators.required],
+      estado: ['', Validators.required],
     });
   }
 
@@ -61,26 +63,9 @@ export class LoginComponent {
     this.isLoginMode = false;
   }
 
-  // Manejar el envío del formulario de inicio de sesión
-  onSubmit(): void {
-    this.submitted = true;
-
-    if (this.loginForm.invalid) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Por favor, complete todos los campos requeridos',
-      });
-      return;
-    }
-
-    this.loading = true;
-    console.log('Datos de inicio de sesión:', this.loginForm.value);
-    // Aquí puedes agregar la lógica para autenticar al usuario
-  }
 
   // Manejar el envío del formulario de registro
-  onRegister(): void {
+  async onRegister() {
     this.submitted = true;
 
     if (this.registerForm.invalid) {
@@ -88,8 +73,36 @@ export class LoginComponent {
     }
 
     this.loading = true;
-    console.log('Datos de registro:', this.registerForm.value);
-    // Aquí puedes agregar la lógica para registrar al usuario
+    const formData = this.registerForm.value;
+    try {
+     
+      this.commonService.postWithHandling('Empresa/CrearEmpresa', formData,
+        (res: any) => {
+          //TODO: MANEJAR RESPUESTA
+          this.loading = false;
+          this.authService.setAuthentication(true);
+          this.router.navigateByUrl(`/home`);
+
+        },
+        (error: any) => {
+          //TODO: MANEJAR RESPUESTA
+
+          this.loading = false;
+        
+        }
+      )
+ 
+
+
+      }
+     catch (error: any) {
+      this.loading = false;
+
+      this.clearLoginErrors();
+
+      this.handleLoginErrors(error.error.message);
+    
+    }    
   }
 
   // Accesores para facilitar el acceso a los controles del formulario
@@ -100,8 +113,6 @@ export class LoginComponent {
   get r() {
     return this.registerForm.controls;
   }
-
-
 
 
 
