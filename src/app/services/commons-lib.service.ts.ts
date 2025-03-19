@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, lastValueFrom } from 'rxjs';
-import { AppData } from '../../../mf-shell/src/app/helpers/app-data';
-import { DinamycFormModalComponent, ModalNotifyComponent } from '@commons-lib';
-import { MatDialog } from '@angular/material/dialog';
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+/* import { DinamycFormModalComponent, ModalNotifyComponent } from '@commons-lib';
+ *//* import { MatDialog } from '@angular/material/dialog';
+ */import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { MatProgressSpinner, MatSpinner } from '@angular/material/progress-spinner';
-import { SpinnerOverlayComponent } from './components/controls/spinner-overlay/spinner-overlay.component';
+/* import { MatProgressSpinner, MatSpinner } from '@angular/material/progress-spinner';
+ *//* import { SpinnerOverlayComponent } from './components/controls/spinner-overlay/spinner-overlay.component';
+ */
+ import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -15,24 +16,24 @@ import { SpinnerOverlayComponent } from './components/controls/spinner-overlay/s
 export class CommonsLibService {
   private config: any;
   private overlayRef: OverlayRef | null = null;
-
+  private urlApi = environment.apiUrl;
   constructor(private http: HttpClient, private overlay: Overlay, private injector: Injector) {}
 
   /* PETICIONES HTTP */
   post<T>(url: string, body: any): Observable<T> {
-    return this.http.post<T>(AppData.API_URL + url, body);
+    return this.http.post<T>(this.urlApi + url, body);
   }
 
   getById<T>(url: string, id: any): Observable<T> {
-    return this.http.get<T>(AppData.API_URL + url + '?Id=' + id);
+    return this.http.get<T>(this.urlApi + url + '?Id=' + id);
   }
 
   get<T>(url: string): Observable<T> {
-    return this.http.get<T>(AppData.API_URL + url);
+    return this.http.get<T>(this.urlApi + url);
   }
 
   edit<T>(url: string, id: any, body: any): Observable<T> {
-    return this.http.post<T>(AppData.API_URL + url + '?id=' + id, body);
+    return this.http.post<T>(this.urlApi + url + '?id=' + id, body);
   }
 
   postWithHandling<T>(
@@ -244,11 +245,11 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
     },
     (validationErrors) => {
       // Manejar errores de validación
-      this.openResultModal(dialog, false, validationErrors, null, true);
+      //this.openResultModal(dialog, false, validationErrors, null, true);
     },
     (generalErrors) => {
       // Manejar errores generales
-      this.openResultModal(dialog, false, null, generalErrors, true);
+      //this.openResultModal(dialog, false, null, generalErrors, true);
     }
   );
 }
@@ -262,7 +263,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
     serverData: string[],
     requestBody,
     dialog,
-    dtInstance: DataTables.Api,
+    //dtInstance: DataTables.Api,
     response?
   ) {
     const serverMethod = serverData.join('/');
@@ -275,28 +276,28 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
       (res) => {
         this.hideSpinner(); 
         response.emit(res);
-        this.reloadDataTable(dtInstance);
-        this.openResultModal(dialog, true, null, null, true);
+       // this.reloadDataTable(dtInstance);
+        //this.openResultModal(dialog, true, null, null, true);
       },
       (validationErrors) => {
         this.hideSpinner(); 
-        this.openResultModal(dialog, false, validationErrors, null, true);
+        //this.openResultModal(dialog, false, validationErrors, null, true);
       },
       (generalErrors) => {
         this.hideSpinner(); 
-        this.openResultModal(dialog, false, null, generalErrors, true);
+        //this.openResultModal(dialog, false, null, generalErrors, true);
       },
       (error) => {
         this.hideSpinner(); 
-        this.openResultModal(dialog, false, null, error);
+        //this.openResultModal(dialog, false, null, error);
       }
     );
   }
 
-  deleteEntity(
+  /* deleteEntity(
     serverData: string,
     dialog,
-    dtInstance?: DataTables.Api,
+    //dtInstance?: DataTables.Api,
     requestBody?,
     response?
   ) {
@@ -316,13 +317,13 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
             {
               response.emit(res);
             }
-
-            if(dtInstance)
+ */
+            /* if(dtInstance)
             {
               this.reloadDataTable(dtInstance);
             }
-            
-            this.openResultModal(dialog, true, null, null, false, true);
+             */
+           /*  this.openResultModal(dialog, true, null, null, false, true);
           },
           (validationErrors) => {
             this.hideSpinner(); 
@@ -353,7 +354,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
         );
       }
     );
-  }
+  } */
 
   //Cargar los datos de la entidad a editar
 
@@ -363,7 +364,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
     formFields,
     dialog,
     serverData: string[],
-    dtInstance: DataTables.Api
+    //dtInstance: DataTables.Api
   ) {
     this.showSpinner();
 
@@ -408,7 +409,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
         };
       });
   
-      const dialogRef = dialog.open(DinamycFormModalComponent, {
+      /* const dialogRef = dialog.open(DinamycFormModalComponent, {
         data: {
           title: 'Editar',
           fields: updatedFields,
@@ -425,13 +426,13 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
               ? '33%'
               : '18%'
             : '50%',
-      });
+      }); */
   
-      dialogRef.afterClosed().subscribe((result) => {
+      /* dialogRef.afterClosed().subscribe((result) => {
         if (result?.confirmed) {
           this.editEntity(serverData, result.data, dialog, id, dtInstance);
         }
-      });
+      }); */
     });
   }
   
@@ -441,7 +442,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
     requestBody,
     dialog,
     id,
-    dtInstance: DataTables.Api,
+    //dtInstance: DataTables.Api,
     response?
   ) {
     const serverMethod = serverData.join('/');
@@ -456,20 +457,20 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
         if (response) {
           response.emit(res);
         }
-        this.reloadDataTable(dtInstance);
-        this.openResultModal(dialog, true);
+        //this.reloadDataTable(dtInstance);
+        //this.openResultModal(dialog, true);
       },
       (validationErrors) => {
         this.hideSpinner(); 
-        this.openResultModal(dialog, false, validationErrors);
+        //this.openResultModal(dialog, false, validationErrors);
       },
       (generalErrors) => {
         this.hideSpinner(); 
-        this.openResultModal(dialog, false, null, generalErrors);
+       // this.openResultModal(dialog, false, null, generalErrors);
       },
       (error) => {
         this.hideSpinner(); 
-        this.openResultModal(dialog, false, null, error);
+        //this.openResultModal(dialog, false, null, error);
       }
     );
   }
@@ -478,9 +479,9 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
 
   /* Datatable */
 
-  reloadDataTable(dtInstance: DataTables.Api): void {
+/*   reloadDataTable(dtInstance: DataTables.Api): void {
     dtInstance.ajax.reload(null, false);
-  }
+  } */
 
 
   booleanColumnRenderer = (data: any, type: any, row: any, meta: any) => {
@@ -507,7 +508,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
 
   /* Modal de notificacion Reutilizable  */
   openResultModal(
-    dialog: MatDialog,
+    //dialog: MatDialog,
     isSuccess: boolean,
     validationErrors?: string[],
     generalErrors?: string[],
@@ -534,7 +535,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
       }
     }
 
-    const dialogRef = dialog.open(ModalNotifyComponent, {
+   /*  const dialogRef = dialog.open(ModalNotifyComponent, {
       data: {
         title: isSuccess ? 'Éxito' : 'Error',
         message,
@@ -543,16 +544,16 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
       },
     });
 
-    dialogRef.afterClosed().subscribe(() => {});
+    dialogRef.afterClosed().subscribe(() => {}); */
   }
 
   openConfirmationModal(
-    dialog: MatDialog,
+    //dialog: MatDialog,
     title: string,
     message: string,
     onConfirm: () => void
   ): void {
-    const dialogRef = dialog.open(ModalNotifyComponent, {
+    /* const dialogRef = dialog.open(ModalNotifyComponent, {
       data: {
         title,
         message,
@@ -566,7 +567,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
       if (result === true) {
         onConfirm();
       }
-    });
+    }); */
   }
 
   /* Fin Modal notificacion  */
@@ -611,7 +612,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
   inicializarVariablesGlobales(AppData, ConfigData) {
     
     AppData.API_KEY = ConfigData.API_KEY;
-    AppData.API_URL = ConfigData.API_URL;
+    //urlApi = ConfigData.API_URL;
     AppData.localStorageToken = ConfigData.localStorageToken;
   }
 
@@ -737,7 +738,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
 
   ObtenerMenusSeleccionados(idRoL: number): Observable<any> {
     return this.http.get<any>(
-      `${AppData.API_URL}Rol/GetIdsMenuByIdRol?Id=${idRoL}`
+      `${this.urlApi}Rol/GetIdsMenuByIdRol?Id=${idRoL}`
     );
   }
 
@@ -832,8 +833,8 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
         .centerVertically(),
     });
 
-    const spinnerPortal = new ComponentPortal(SpinnerOverlayComponent);
-    this.overlayRef.attach(spinnerPortal);
+    //const spinnerPortal = new ComponentPortal(SpinnerOverlayComponent);
+    //this.overlayRef.attach(spinnerPortal);
   }
 }
 

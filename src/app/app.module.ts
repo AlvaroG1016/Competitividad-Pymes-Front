@@ -25,6 +25,10 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { RouterModule } from '@angular/router'; 
 import { provideHttpClient } from '@angular/common/http'; 
+import { SidenavComponent } from './components/sidenav/sidenav.component';
+import { LayoutComponent } from './components/layout/layout.component';
+import { BodyComponent } from './components/body/body.component';
+
 
 // PrimeNG Modules
 import { PasswordModule } from 'primeng/password';
@@ -33,13 +37,18 @@ import { MessageModule } from 'primeng/message';
 import { RippleModule } from 'primeng/ripple';
 import { MyPreset } from '../mytheme';
 import { StepsModule } from 'primeng/steps';
+import { SublevelMenuComponent } from './components/sidenav/sublevel-menu.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    BodyComponent,
+    LayoutComponent,
+    SidenavComponent,
+    SublevelMenuComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,38 @@
+.user-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1vh 2vw;
+    background-color: #293846;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    height: 4vh; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-left: -0.4vh;
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      margin-right: 1vw;
+      text-align: right;
+  
+      .user-name {
+        font-size: 1.6vh; 
+        font-weight: bold;
+        line-height: 1.5vh;
+      }
+  
+      .user-role {
+        font-size: 1.2vh;
+        color: #b0c4de; 
+        line-height: 1.2vh;
+      }
+    }
+  
+    .user-avatar {
+      width: 4vh;
+      height: 4vh;
+      border-radius: 50%;
+      border: 0.2vh solid #ffffff;
+    }
+  }
+  
