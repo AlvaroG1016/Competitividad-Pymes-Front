@@ -35,7 +35,7 @@ import { PasswordModule } from 'primeng/password';
 
 import { MessageModule } from 'primeng/message';
 import { RippleModule } from 'primeng/ripple';
-import { MyPreset } from '../mytheme';
+import { MyPreset  } from '../TemaGris';
 import { StepsModule } from 'primeng/steps';
 import { SublevelMenuComponent } from './components/sidenav/sublevel-menu.component';
 

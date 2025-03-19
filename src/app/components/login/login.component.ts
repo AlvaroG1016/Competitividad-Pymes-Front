@@ -105,6 +105,8 @@ export class LoginComponent {
           summary: 'Empresa creada exitosamente',
           detail: 'Ya puede iniciar sesión con los datos registrados',
         });
+        this.switchToLogin();
+        this.registerForm.reset();
       }
     } catch (error: any) {
       this.loading = false;

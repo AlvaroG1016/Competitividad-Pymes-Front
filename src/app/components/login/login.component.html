@@ -17,7 +17,7 @@
     <p-card class="form-container">
       <ng-template pTemplate="title">
         <div class="login-header">
-          <img src="assets/images/logo.png" alt="Logo" class="logo" />
+          <img src="assets/logo-2024.png" alt="Logo" class="logo" />
           <h1 *ngIf="isLoginMode">Iniciar Sesión</h1>
           <h1 *ngIf="!isLoginMode">Registrarse</h1>
         </div>
@@ -128,7 +128,7 @@
         [formGroup]="registerForm"
         (ngSubmit)="onRegister()"
       >
-        <div class="card">
+        <div class="card" style="margin-bottom: 1rem;">
           <!-- Steps Component -->
           <p-steps
             [model]="items"
@@ -140,7 +140,6 @@
 
           <!-- Contenido dinámico basado en el paso activo -->
           <div *ngIf="activeIndex === 0">
-            <h3>Información de la Empresa</h3>
             <div class="p-fluid">
               <div class="field">
                 <span class="p-input-icon-left">
@@ -242,8 +241,7 @@
             </div>
           </div>
 
-          <div *ngIf="activeIndex === 1">
-            <h3>Datos del Usuario</h3>
+          <div  *ngIf="activeIndex === 1">
             <div class="p-fluid">
               <div class="field">
                 <span class="p-input-icon-left">

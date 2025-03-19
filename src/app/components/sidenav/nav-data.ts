@@ -4,37 +4,19 @@ import { INavbarData } from './helper';
 export const navbarData: INavbarData[] = [
   {
     routeLink: '#',
-    icon: 'ms-Icon ms-Icon--Settings',
+    icon: 'pi pi-cog',
     label: 'Configuracion',
     items: [
       {
         routeLink: 'configuracion/configempresa',
         label: 'Configuracion Empresa',
       },
-      {
-        routeLink: 'configuracion/configcontable',
-        label: 'Configuracion Contable',
-      },
+      
       {
         routeLink: 'configuracion/empresa',
         label: 'Empresas',
       },
-      {
-        routeLink: 'configuracion/paises',
-        label: 'Paises',
-      },
-      {
-        routeLink: 'configuracion/departamentos',
-        label: 'Departamentos',
-      },
-      {
-        routeLink: 'configuracion/ciudades',
-        label: 'Ciudades',
-      },
-      {
-        routeLink: 'configuracion/saludo',
-        label: 'Saludo',
-      },
+      
       {
         routeLink: '#',
         label: 'Seguridad',
@@ -53,8 +35,8 @@ export const navbarData: INavbarData[] = [
   },
   {
     routeLink: '#',
-    icon: 'ms-Icon ms-Icon--ProcessMetaTask',
-    label: 'Contabilidad',
+    icon: 'pi pi-desktop',
+    label: 'Modulo 1',
     items: [
       {
         routeLink: '#',
@@ -62,198 +44,19 @@ export const navbarData: INavbarData[] = [
         items: [
           {
             routeLink: '#',
-            label: 'Configuracion Contabilidad',
+            label: 'Configuracion modulo 1',
           },
-          {
-            routeLink: 'contabilidad/periodoscontables',
-            label: 'Periodos Contables',
-          },
-          {
-            routeLink: 'contabilidad/tipocomprobante',
-            label: 'Tipos Comprobante',
-          },
-          {
-            routeLink: 'contabilidad/tercero',
-            label: 'Terceros',
-          },
-          {
-            routeLink: 'contabilidad/tipoidentificacion',
-            label: 'Tipo Identificacion',
-          },
-          {
-            routeLink: 'contabilidad/tipofiscal',
-            label: 'Tipo Fiscal',
-          },
-          {
-            routeLink: 'contabilidad/centrocosto',
-            label: 'Centro de Costo',
-          },
-          {
-            routeLink: 'contabilidad/oficina',
-            label: 'Oficinas',
-          },
-          {
-            routeLink: 'contabilidad/actividadeconomica',
-            label: 'Actividad Economica',
-          },
-          {
-            routeLink: '#',
-            label: 'Diseñar Comprobante',
-          },
+          
         ],
       },
-      {
-        routeLink: 'contabilidad/plancuentas',
-        label: 'Plan de Cuenta',
-      },
-      {
-        routeLink: 'contabilidad/plancuentasniif',
-        label: 'Plan de Cuentas NIIF',
-      },
-      {
-        routeLink: 'contabilidad/notacontable',
-        label: 'Nota Contabilidad',
-      },
-      {
-        routeLink: '#',
-        label: 'Consultas',
-        items: [
-          {
-            routeLink: 'contabilidad/movimientocuenta',
-            label: 'Movimiento Cuenta',
-          },
-          {
-            routeLink: 'contabilidad/movimientotercero',
-            label: 'Movimiento Tercero',
-          },
-          {
-            routeLink: 'contabilidad/movimientocentrocosto',
-            label: 'Movimiento Centro Costo',
-          },
-          {
-            routeLink: '#',
-            label: 'Balance Prueba',
-          },
-          {
-            routeLink: '#',
-            label: 'Saldo Inicial Cuentas',
-          },
-          {
-            routeLink: 'contabilidad/movimientocomprobante',
-            label: 'Movimiento Comprobante',
-          },
-        ],
-      },
-      {
-        routeLink: '#',
-        label: 'Reportes Contables',
-        items : [
-          {
-            routeLink:'#',
-            label: 'Movimiento Procesado',
-          },
-          {
-            routeLink:'#',
-            label: 'Libros Auxiliares',
-          },
-          {
-            routeLink:'#',
-            label: 'Libro Diario',
-          },
-          {
-            routeLink:'#',
-            label: 'Libro Mayor',
-          },
-          {
-            routeLink:'#',
-            label: 'Comprobante Diario',
-          },
-          {
-            routeLink:'#',
-            label: 'Cuenta Tercero',
-          },
-          {
-            routeLink:'#',
-            label: 'Cuenta C Costo Oficina',
-          },
-          {
-            routeLink:'#',
-            label: 'Anexo Contable',
-          },
-          {
-            routeLink:'#',
-            label: 'Anexo Local NIIF',
-          },
-          {
-            routeLink:'#',
-            label: 'Listado Comprobantes',
-          },
-        ]
-      },
-      {
-        routeLink:'#',
-        label: 'Estados Financieros',
-        items:[
-          {
-            routeLink:'#',
-            label: 'Balance General',
-          },
-          {
-            routeLink:'#',
-            label: 'Estado de Resultados',
-          },
-        ]
-      },
-      {
-        routeLink:'#',
-        label: 'Certificados Tributarios',
-        items:[
-          {
-            routeLink:'#',
-            label: 'Configurar RETE FTE',
-          },
-          {
-            routeLink:'#',
-            label: 'Configurar RETE IVA',
-          },
-          {
-            routeLink:'#',
-            label: 'Configurar RETE ICA',
-          },
-          {
-            routeLink:'#',
-            label: 'Diseñar Certificado',
-          },
-          {
-            routeLink:'#',
-            label: 'Generar Certificados',
-          },
-        ]
-      },
-      {
-        routeLink:'#',
-        label: 'Medios Magneticos',
-        items:[
-          {
-            routeLink:'#',
-            label: 'Formatos',
-          },
-          {
-            routeLink:'#',
-            label: 'Conceptos',
-          },
-          {
-            routeLink:'#',
-            label: 'Conceptos/Cuentas',
-          },
-        ]
-      },
+      
+      
     ],
   },
   {
     routeLink: 'formularios',
-    icon: 'ms-Icon ms-Icon--FormLibrary',
-    label: 'Cliente',
+    icon: 'pi pi-desktop',
+    label: 'Modulo 2',
     items:[
       {
         routeLink:'#',
@@ -327,8 +130,8 @@ export const navbarData: INavbarData[] = [
   },
   {
     routeLink: 'iniciar-proceso',
-    icon: 'ms-Icon ms-Icon--Processing',
-    label: 'Proovedor',
+    icon: 'pi pi-desktop',
+    label: 'Modulo 3',
     items:[
       {
         routeLink:'#',
@@ -390,8 +193,8 @@ export const navbarData: INavbarData[] = [
   },
   {
     routeLink: 'auditoria',
-    icon: 'ms-Icon ms-Icon--ComplianceAudit',
-    label: 'Inventario',
+    icon: 'pi pi-desktop',
+    label: 'Modulo 4',
     items:[
       {
         routeLink:'#',
@@ -473,8 +276,8 @@ export const navbarData: INavbarData[] = [
   },
   {
     routeLink: 'tareas',
-    icon: 'ms-Icon ms-Icon--TaskManager',
-    label: 'Facturacion',
+    icon: 'pi pi-desktop',
+    label: 'Modulo 5',
     items:[
       {
         routeLink:'#',
@@ -490,7 +293,8 @@ export const navbarData: INavbarData[] = [
   },
   {
     routeLink:'#',
-    label: 'Compras',
+    label: 'Modulo 6',
+    icon: 'pi pi-desktop',
     items:[
       {
         routeLink:'#',
@@ -506,7 +310,8 @@ export const navbarData: INavbarData[] = [
   },
   {
     routeLink:'#',
-    label: 'Tesoreria',
+    icon: 'pi pi-desktop',
+    label: 'Modulo 7',
     items:[
       {
         routeLink:'#',
@@ -532,6 +337,24 @@ export const navbarData: INavbarData[] = [
             routeLink:'#',
             label: 'Pagos Comprobante Egreso',
           },
+        ]
+      },
+    ]
+  },
+  {
+    routeLink:'#',
+    icon: 'pi pi-desktop',
+    label: 'Modulo 8',
+    items:[
+      {
+        routeLink:'#',
+        label: 'Configuracion',
+        items:[
+          {
+            routeLink:'#',
+            label: 'md 8',
+          },
+          
         ]
       },
     ]
