@@ -35,7 +35,9 @@
 
             ],
             "styles": [
+              "node_modules/primeicons/primeicons.css",
               "src/styles.css"
+
             ],
             "scripts": []
           },
@@ -65,6 +67,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "hmr": false
+          },
           "configurations": {
             "production": {
               "buildTarget": "Competitividad-Pymes:build:production"
@@ -91,7 +96,9 @@
 
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/primeicons/primeicons.css"
+
             ],
             "scripts": []
           }
