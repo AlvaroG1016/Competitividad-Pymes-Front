@@ -12,14 +12,38 @@ import { Router } from '@angular/router';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
-  isLoginMode = true; // Controla si se muestra el formulario de inicio de sesión o registro
+  isLoginMode = true; 
   submitted = false;
   loading = false;
+  showPassword: boolean = false;
+  activeIndex: number = -1; 
+  isEmpresaInfoSection: boolean = false; 
 
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  goToNextStep(): void {
+
+    if (
+      this.registerForm.get('Nombre')?.valid &&
+      this.registerForm.get('Sector')?.valid &&
+      this.registerForm.get('Clasificacion')?.valid &&
+      this.registerForm.get('Estado')?.valid
+    ) {
+      this.activeIndex = 1; 
+      this.isEmpresaInfoSection = false; 
+    } else {
+      this.registerForm.get('Nombre')?.markAsTouched();
+      this.registerForm.get('Sector')?.markAsTouched();
+      this.registerForm.get('Clasificacion')?.markAsTouched();
+      this.registerForm.get('Estado')?.markAsTouched();
+    }
+  }
+  
   loginForm!: FormGroup;
   registerForm!: FormGroup;
 
-  activeIndex = 0; // Índice del paso activo
   items = [
     { label: 'Información de la Empresa' },
     { label: 'Datos del Usuario' },
@@ -48,26 +72,31 @@ export class LoginComponent {
     this.registerForm = this.fb.group({
       Nombre: ['', Validators.required],
       Sector: ['', Validators.required],
-      CorreoUsuario: ['', [Validators.required, Validators.email]],
-      PasswordUsuario: ['', Validators.required],
       Clasificacion: ['', Validators.required],
       Estado: ['', Validators.required],
+      CorreoUsuario: ['', [Validators.required, Validators.email]],
+      PasswordUsuario: ['', Validators.required],
     });
   }
 
   // Cambiar el índice del paso activo
-  onActiveIndexChange(event: number): void {
-    this.activeIndex = event;
+  onActiveIndexChange(index: number): void {
+    this.activeIndex = index;
+    this.isEmpresaInfoSection = index === 0; 
   }
 
   // Alternar al formulario de inicio de sesión
   switchToLogin(): void {
     this.isLoginMode = true;
+    this.activeIndex = -1; 
+    this.isEmpresaInfoSection = false; 
   }
 
-  // Alternar al formulario de registro
+  // Alternar al formulario de registro y establecer el índice inicial
   switchToRegister(): void {
     this.isLoginMode = false;
+    this.activeIndex = 0; 
+    this.isEmpresaInfoSection = true; 
   }
 
   // Manejar el envío del formulario de inicio de sesión
