@@ -14,7 +14,9 @@
 
   <!-- Lado derecho: Formulario de login/registro -->
   <div class="login-form-side">
-    <p-card class="form-container" [ngClass]="{ 'empresa-info-margin': isEmpresaInfoSection }">
+    <p-card class="form-container"
+     [ngClass]="{'empresa-info-margin': activeIndex === 0, 
+                'empresa-info-margin-2': activeIndex === 1}">  
       <ng-template pTemplate="title">
         <div class="login-header">
           <img src="assets/logo-2024.png" alt="Logo" class="logo" />
@@ -61,6 +63,7 @@
               <p-floatlabel>
                 <p-password
                   id="password"
+                  inputId="password"
                   formControlName="password"
                   [toggleMask]="true"
                   [feedback]="false"
@@ -68,7 +71,7 @@
                     'ng-invalid ng-dirty': f['password'].invalid && f['password'].touched
                   }">
                 </p-password>
-                <label for="password">Contraseña</label>
+                <label>Contraseña</label>
               </p-floatlabel>
             </span>
             <small *ngIf="f['password'].errors?.['required'] && f['password'].touched" class="p-error">
@@ -163,16 +166,12 @@
               <div class="login-footer" *ngIf="activeIndex === 0">
                 <button
                   pButton
+                  type="button"
                   label="Siguiente"
                   icon="pi pi-arrow-right"
-                  iconPos="right"
+                  class="p-button-primary"
                   (click)="goToNextStep()"
-                  [disabled]="
-                    !registerForm.get('Nombre')?.valid ||
-                    !registerForm.get('Sector')?.valid ||
-                    !registerForm.get('Clasificacion')?.valid ||
-                    !registerForm.get('Estado')?.valid
-                  "
+                  [disabled]="!isCurrentStepValid()"
                 ></button>
               </div>
             </div>
@@ -207,7 +206,7 @@
                           r['PasswordUsuario'].touched
                       }">
                     </p-password>
-                    <label for="PasswordUsuario">Contraseña</label>
+                    <label>Contraseña</label>
                   </p-floatlabel>
                 </span>
                 <small *ngIf="r['PasswordUsuario'].errors?.['required'] && r['PasswordUsuario'].touched"

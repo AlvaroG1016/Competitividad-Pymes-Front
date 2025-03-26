@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { environment } from '../../../environments/environment';
@@ -11,43 +11,28 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
   isLoginMode = true; 
   submitted = false;
   loading = false;
   showPassword: boolean = false;
   activeIndex: number = -1; 
-  isEmpresaInfoSection: boolean = false; 
+
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
   goToNextStep(): void {
-
-    if (
-      this.registerForm.get('Nombre')?.valid &&
-      this.registerForm.get('Sector')?.valid &&
-      this.registerForm.get('Clasificacion')?.valid &&
-      this.registerForm.get('Estado')?.valid
-    ) {
-      this.activeIndex = 1; 
-      this.isEmpresaInfoSection = false; 
+    if (this.isCurrentStepValid()) {
+      this.activeIndex = 1;
     } else {
-      this.registerForm.get('Nombre')?.markAsTouched();
-      this.registerForm.get('Sector')?.markAsTouched();
-      this.registerForm.get('Clasificacion')?.markAsTouched();
-      this.registerForm.get('Estado')?.markAsTouched();
+      this.markCurrentStepFieldsAsTouched();
     }
   }
   
   loginForm!: FormGroup;
   registerForm!: FormGroup;
-
-  items = [
-    { label: 'Información de la Empresa' },
-    { label: 'Datos del Usuario' },
-  ];
 
   constructor(
     private fb: FormBuilder,
@@ -61,6 +46,8 @@ export class LoginComponent {
     if (API_TOKEN) {
       this.authService.logout();
     }
+
+    this.updateLabels();
 
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -77,26 +64,48 @@ export class LoginComponent {
       CorreoUsuario: ['', [Validators.required, Validators.email]],
       PasswordUsuario: ['', Validators.required],
     });
+
+    window.addEventListener('resize', this.updateLabels.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.updateLabels.bind(this));
+  }
+
+  items = [
+    { label: 'Información de la Empresa' },
+    { label: 'Datos del Usuario' },
+  ];
+
+  updateLabels(): void {
+    if (window.innerWidth <= 480) {
+      this.items = [
+        { label: 'Empresa' },
+        { label: 'Usuario' },
+      ];
+    } else {
+      this.items = [
+        { label: 'Información de la Empresa' },
+        { label: 'Datos del Usuario' },
+      ];
+    }
   }
 
   // Cambiar el índice del paso activo
   onActiveIndexChange(index: number): void {
     this.activeIndex = index;
-    this.isEmpresaInfoSection = index === 0; 
   }
 
   // Alternar al formulario de inicio de sesión
   switchToLogin(): void {
     this.isLoginMode = true;
     this.activeIndex = -1; 
-    this.isEmpresaInfoSection = false; 
   }
 
   // Alternar al formulario de registro y establecer el índice inicial
   switchToRegister(): void {
     this.isLoginMode = false;
     this.activeIndex = 0; 
-    this.isEmpresaInfoSection = true; 
   }
 
   // Manejar el envío del formulario de inicio de sesión
@@ -153,6 +162,16 @@ export class LoginComponent {
     return this.registerForm.controls;
   }
 
+  isCurrentStepValid(): boolean {
+    const requiredFields = ['Nombre', 'Sector', 'Clasificacion', 'Estado'];
+    return requiredFields.every(field => this.registerForm.get(field)?.valid);
+  }
+
+  private markCurrentStepFieldsAsTouched(): void {
+    const requiredFields = ['Nombre', 'Sector', 'Clasificacion', 'Estado'];
+    requiredFields.forEach(field => this.registerForm.get(field)?.markAsTouched());
+  }
+
   private clearLoginErrors() {
     this.loginForm.get('hasErrorUserName')?.setValue(false);
     this.loginForm.get('hasErrorPassword')?.setValue(false);
@@ -160,7 +179,12 @@ export class LoginComponent {
     this.loginForm.get('hasErrorCompany')?.setValue(false);
   }
 
-  private handleLoginErrors(errorMessage: string) {
+  private handleLoginErrors(errorMessage: any): void {
+    if (!errorMessage || typeof errorMessage !== 'string') {
+      console.error('Error inesperado:', errorMessage);
+      return;
+    }
+
     const errorMapping = {
       'Correo o contraseña incorrectos': {
         errorKey: 'hasErrorPassword',
