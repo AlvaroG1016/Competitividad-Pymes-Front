@@ -37,7 +37,9 @@ import { MessageModule } from 'primeng/message';
 import { RippleModule } from 'primeng/ripple';
 import { MyPreset  } from '../TemaGris';
 import { StepsModule } from 'primeng/steps';
+import { RadioButton } from 'primeng/radiobutton';
 import { SublevelMenuComponent } from './components/sidenav/sublevel-menu.component';
+import { TarjetaPreguntasComponent } from './components/tarjeta-preguntas/tarjeta-preguntas.component';
 
 
 
@@ -48,7 +50,8 @@ import { SublevelMenuComponent } from './components/sidenav/sublevel-menu.compon
     BodyComponent,
     LayoutComponent,
     SidenavComponent,
-    SublevelMenuComponent
+    SublevelMenuComponent,
+    TarjetaPreguntasComponent
   ],
   imports: [
     BrowserModule,
@@ -69,7 +72,8 @@ import { SublevelMenuComponent } from './components/sidenav/sublevel-menu.compon
     RippleModule,
     TooltipModule,
     RouterModule,
-    StepsModule
+    StepsModule,
+    RadioButton
   ],
   providers: [
     provideAnimationsAsync(),

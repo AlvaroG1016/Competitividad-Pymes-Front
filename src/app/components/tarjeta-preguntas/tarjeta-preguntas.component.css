@@ -1,0 +1,48 @@
+/* Contenedor centrado */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  /* Card con tamaño adecuado */
+  /* Card con mayor tamaño */
+.question-card {
+    width: 450px; /* Aumentamos el ancho */
+    padding: 2rem; /* Más espacio interno */
+    border-radius: 16px; /* Bordes más suaves */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* Sombra más sutil */
+    background: white;
+  }
+  
+  
+  /* Estilos del título */
+  .question-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* Contenedor de opciones */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Fila de opción */
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Estilos de las etiquetas */
+  .option-label {
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
