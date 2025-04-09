@@ -34,12 +34,16 @@ import { BodyComponent } from './components/body/body.component';
 import { PasswordModule } from 'primeng/password';
 
 import { MessageModule } from 'primeng/message';
+import { DropdownModule} from 'primeng/dropdown';
 import { RippleModule } from 'primeng/ripple';
 import { MyPreset  } from '../TemaGris';
 import { StepsModule } from 'primeng/steps';
 import { RadioButton } from 'primeng/radiobutton';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { SublevelMenuComponent } from './components/sidenav/sublevel-menu.component';
 import { TarjetaPreguntasComponent } from './components/tarjeta-preguntas/tarjeta-preguntas.component';
+import { CaracterizacionUsuarioComponent } from './components/caracterizacion-usuario/caracterizacion-usuario.component';
+import { QuestionlistComponent } from './components/questionlist/questionlist.component';
 
 
 
@@ -51,7 +55,9 @@ import { TarjetaPreguntasComponent } from './components/tarjeta-preguntas/tarjet
     LayoutComponent,
     SidenavComponent,
     SublevelMenuComponent,
-    TarjetaPreguntasComponent
+    TarjetaPreguntasComponent,
+    CaracterizacionUsuarioComponent,
+    QuestionlistComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +79,9 @@ import { TarjetaPreguntasComponent } from './components/tarjeta-preguntas/tarjet
     TooltipModule,
     RouterModule,
     StepsModule,
-    RadioButton
+    RadioButton,
+    DropdownModule,
+    InputNumberModule
   ],
   providers: [
     provideAnimationsAsync(),

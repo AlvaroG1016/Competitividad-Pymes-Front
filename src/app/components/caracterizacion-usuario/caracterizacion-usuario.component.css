@@ -1,0 +1,77 @@
+.survey-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    background-color: #f0f2f5;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .survey-wrapper {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .survey-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 24px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  .form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-field label {
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+  }
+
+  .form-field input,
+  .form-field p-inputNumber,
+  .form-field p-dropdown {
+    width: 100%;
+  }
+
+  .error-text {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 5px;
+  }
+
+  .form-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    .survey-wrapper {
+      padding: 20px;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }

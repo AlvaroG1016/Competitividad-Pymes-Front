@@ -119,7 +119,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (res.ok) {
         this.loading = false;
         this.authService.setAuthentication(true);
-        this.router.navigateByUrl(`/home`);
+        this.router.navigateByUrl(`/home/caracterizacion`);
       }
     } catch (error: any) {
       this.loading = false;

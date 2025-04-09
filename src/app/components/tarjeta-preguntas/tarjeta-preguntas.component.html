@@ -1,21 +1,21 @@
 <div class="container">
-    <p-card class="question-card">
-      <ng-template pTemplate="header">
-        <h3 class="question-title">¿Cuál es tu lenguaje de programación favorito?</h3>
-      </ng-template>
-      <ng-template pTemplate="content">
-        <div class="options">
-          <div *ngFor="let option of options" class="option">
-            <p-radioButton
-              name="language"
-              [value]="option"
-              [(ngModel)]="selectedOption"
-              [inputId]="option"
-            ></p-radioButton>
-            <label [for]="option" class="option-label">{{ option }}</label>
-          </div>
+  <p-card class="question-card">
+    <ng-template pTemplate="header">
+      <h3 class="question-title">{{ question }}</h3>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="options">
+        <div *ngFor="let option of options" class="option">
+          <p-radioButton
+            name="{{ preguntaId }}"
+            [value]="option"
+            [(ngModel)]="selectedOption"
+            (onClick)="onOptionChange(option)"
+            [inputId]="preguntaId + option"
+          ></p-radioButton>
+          <label [for]="preguntaId + option" class="option-label">{{ option }}</label>
         </div>
-      </ng-template>
-    </p-card>
-  </div>
-  
+      </div>
+    </ng-template>
+  </p-card>
+</div>

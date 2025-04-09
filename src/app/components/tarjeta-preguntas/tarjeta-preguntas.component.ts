@@ -1,12 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-tarjeta-preguntas',
-  standalone: false,
+  standalone:false,
   templateUrl: './tarjeta-preguntas.component.html',
-  styleUrl: './tarjeta-preguntas.component.css'
+  styleUrls: ['./tarjeta-preguntas.component.css']
 })
 export class TarjetaPreguntasComponent {
-  options = ['JavaScript', 'Python', 'Java', 'C#'];
-  selectedOption: string = '';
+  @Input() preguntaId: string = ''; // Identificador único de la pregunta
+  @Input() question: string = ''; // Recibe la pregunta
+  @Input() options: string[] = []; // Recibe las opciones
+  @Input() selectedOption: string = ''; // Recibe la opción seleccionada desde el padre
+  @Output() optionSelected = new EventEmitter<string>(); // Emite la opción seleccionada
+
+  onOptionChange(option: string) {
+    this.selectedOption = option;
+    this.optionSelected.emit(option);
+  }
 }

@@ -3,11 +3,19 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { LayoutComponent } from './components/layout/layout.component';
 import { TarjetaPreguntasComponent } from './components/tarjeta-preguntas/tarjeta-preguntas.component';
+import { CaracterizacionUsuarioComponent } from './components/caracterizacion-usuario/caracterizacion-usuario.component';
+import { QuestionlistComponent } from './components/questionlist/questionlist.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full' }, 
   {path:'login', component: LoginComponent},
-  {path:'home', component:LayoutComponent},
+  {path:'home', component:LayoutComponent, 
+    children:[
+      {path:'caracterizacion', component:CaracterizacionUsuarioComponent},
+      {path:'gestionempresarial', component:QuestionlistComponent},
+
+    ]
+  },
 ];
 
 @NgModule({

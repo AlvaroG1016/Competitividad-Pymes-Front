@@ -1,0 +1,120 @@
+<div class="survey-container">
+    <div class="survey-wrapper">
+      <h2 class="survey-title">Caracterizacion de Usuario</h2>
+      <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()" class="survey-form">
+        <div class="form-grid">
+          <div class="form-column">
+            <div class="form-field">
+              <label for="name">Nombre del Encuestado</label>
+              <input 
+                id="name" 
+                type="text" 
+                pInputText 
+                formControlName="name" 
+                placeholder="Nombre completo"
+              />
+              <small 
+                *ngIf="surveyForm.get('name')?.invalid && surveyForm.get('name')?.touched" 
+                class="error-text"
+              >
+                Nombre es requerido
+              </small>
+            </div>
+
+            <div class="form-field">
+              <label for="age">Edad</label>
+              <p-inputNumber 
+                id="age" 
+                formControlName="age" 
+                [min]="18" 
+                [max]="100" 
+                placeholder="Edad"
+              ></p-inputNumber>
+              <small 
+                *ngIf="surveyForm.get('age')?.invalid && surveyForm.get('age')?.touched" 
+                class="error-text"
+              >
+                Edad inválida (18-100)
+              </small>
+            </div>
+
+            <div class="form-field">
+              <label for="gender">Género</label>
+              <p-dropdown 
+                id="gender" 
+                [options]="genderOptions" 
+                formControlName="gender"
+                placeholder="Seleccione género"
+              ></p-dropdown>
+              <small 
+                *ngIf="surveyForm.get('gender')?.invalid && surveyForm.get('gender')?.touched" 
+                class="error-text"
+              >
+                Género es requerido
+              </small>
+            </div>
+          </div>
+
+          <div class="form-column">
+            <div class="form-field">
+              <label for="position">Cargo que Desempeña</label>
+              <input 
+                id="position" 
+                type="text" 
+                pInputText 
+                formControlName="position" 
+                placeholder="Cargo actual"
+              />
+              <small 
+                *ngIf="surveyForm.get('position')?.invalid && surveyForm.get('position')?.touched" 
+                class="error-text"
+              >
+                Cargo es requerido
+              </small>
+            </div>
+
+            <div class="form-field">
+              <label for="seniority">Tiempo de Antigüedad</label>
+              <p-inputNumber 
+                id="seniority" 
+                formControlName="seniority" 
+                [min]="0" 
+                placeholder="Años en la empresa"
+              ></p-inputNumber>
+              <small 
+                *ngIf="surveyForm.get('seniority')?.invalid && surveyForm.get('seniority')?.touched" 
+                class="error-text"
+              >
+                Antigüedad inválida
+              </small>
+            </div>
+
+            <div class="form-field">
+              <label for="institutionalEmail">Correo Institucional</label>
+              <input 
+                id="institutionalEmail" 
+                type="email" 
+                pInputText 
+                formControlName="institutionalEmail" 
+                placeholder="nombre@empresa.com"
+              />
+              <small 
+                *ngIf="surveyForm.get('institutionalEmail')?.invalid && surveyForm.get('institutionalEmail')?.touched" 
+                class="error-text"
+              >
+                Correo institucional inválido
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <p-button 
+            type="submit" 
+            label="Enviar Encuesta" 
+            [disabled]="surveyForm.invalid"
+          ></p-button>
+        </div>
+      </form>
+    </div>
+  </div>
