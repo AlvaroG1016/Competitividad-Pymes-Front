@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
+import { ModalNotifyComponent } from './components/modal-notify/modal-notify.component';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
@@ -29,7 +29,9 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { LayoutComponent } from './components/layout/layout.component';
 import { BodyComponent } from './components/body/body.component';
 
-
+//Material  Modules
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
 // PrimeNG Modules
 import { PasswordModule } from 'primeng/password';
 
@@ -44,6 +46,14 @@ import { SublevelMenuComponent } from './components/sidenav/sublevel-menu.compon
 import { TarjetaPreguntasComponent } from './components/tarjeta-preguntas/tarjeta-preguntas.component';
 import { CaracterizacionUsuarioComponent } from './components/caracterizacion-usuario/caracterizacion-usuario.component';
 import { QuestionlistComponent } from './components/questionlist/questionlist.component';
+import { GestionempresarialComponent } from './components/gestionempresarial/gestionempresarial.component';
+import { OperaciongestionservicioComponent } from './components/operaciongestionservicio/operaciongestionservicio.component';
+import { AseguramientocalidadComponent } from './components/aseguramientocalidad/aseguramientocalidad.component';
+import { MercadeocomercializacionComponent } from './components/mercadeocomercializacion/mercadeocomercializacion.component';
+import { EstrategiagestionfinancieraComponent } from './components/estrategiagestionfinanciera/estrategiagestionfinanciera.component';
+import { GrecursoshumanosComponent } from './components/grecursoshumanos/grecursoshumanos.component';
+import { GambientalComponent } from './components/gambiental/gambiental.component';
+import { TecnologiasisComponent } from './components/tecnologiasis/tecnologiasis.component';
 
 
 
@@ -57,7 +67,16 @@ import { QuestionlistComponent } from './components/questionlist/questionlist.co
     SublevelMenuComponent,
     TarjetaPreguntasComponent,
     CaracterizacionUsuarioComponent,
-    QuestionlistComponent
+    QuestionlistComponent,
+    GestionempresarialComponent,
+    OperaciongestionservicioComponent,
+    AseguramientocalidadComponent,
+    MercadeocomercializacionComponent,
+    EstrategiagestionfinancieraComponent,
+    GrecursoshumanosComponent,
+    GambientalComponent,
+    TecnologiasisComponent,
+    ModalNotifyComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +100,9 @@ import { QuestionlistComponent } from './components/questionlist/questionlist.co
     StepsModule,
     RadioButton,
     DropdownModule,
-    InputNumberModule
+    InputNumberModule,
+    MatDialogModule,
+    MatButtonModule
   ],
   providers: [
     provideAnimationsAsync(),

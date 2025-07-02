@@ -1,37 +1,104 @@
-<div class="instructions-container">
+<div class="questionlist-container">
+  <!-- Contenedor de instrucciones mejorado -->
+  <div class="instructions-container">
     <h3>Cómo responder las preguntas</h3>
     <p>
-      Cada factor cuenta con una serie de variables para su medición, las cuales incluyen indicadores representados en preguntas. 
-      Debes seleccionar una respuesta según la siguiente escala:
+      Cada factor cuenta con una serie de variables para su medición, las cuales
+      incluyen indicadores representados en preguntas. Debes seleccionar una
+      respuesta según la siguiente escala:
     </p>
     <ul>
-      <li><strong>1 - No existe:</strong> No se ha contemplado en la organización.</li>
-      <li><strong>2 - Acción escrita:</strong> Existe, pero sin acciones en marcha por el momento.</li>
-      <li><strong>3 - Inició pruebas:</strong> Se han realizado pruebas o tiene un bajo nivel de implementación.</li>
-      <li><strong>4 - En implementación:</strong> Hay resultados parciales y está en proceso.</li>
-      <li><strong>5 - Implementado con éxito:</strong> Constituye un aspecto diferencial de la organización.</li>
+      <li>
+        <strong>1 - No existe:</strong> No se ha contemplado en la organización.
+      </li>
+      <li>
+        <strong>2 - Acción escrita:</strong> Existe, pero sin acciones en marcha
+        por el momento.
+      </li>
+      <li>
+        <strong>3 - Inició pruebas:</strong> Se han realizado pruebas o tiene un
+        bajo nivel de implementación.
+      </li>
+      <li>
+        <strong>4 - En implementación:</strong> Hay resultados parciales y está en
+        proceso.
+      </li>
+      <li>
+        <strong>5 - Implementado con éxito:</strong> Constituye un aspecto
+        diferencial de la organización.
+      </li>
     </ul>
     <p>
-      Solo puedes elegir una opción por pregunta, seleccionando la que mejor represente la realidad de tu organización.
+      Solo puedes elegir una opción por pregunta, seleccionando la que mejor
+      represente la realidad de tu organización.
     </p>
   </div>
-  
-  <!-- Contenedor de Preguntas -->
-  <h2>{{ factores[pasoActual].nombre }}</h2>
-  <div class="grid-container">
-    <app-tarjeta-preguntas
-      *ngFor="let q of factores[pasoActual].preguntas"
-      [preguntaId]="q.id"
-      [question]="q.question"
-      [options]="q.options"
-      [selectedOption]="respuestas[q.id] || ''"
-      (optionSelected)="onOptionSelected(q.id, $event)">
-    </app-tarjeta-preguntas>
+
+  <!-- Indicador de progreso -->
+  <div class="progress-indicator">
+    <div class="progress-text">
+      Paso {{ pasoActual + 1 }} de {{ factores.length }}
+    </div>
+    <div class="progress-bar">
+      <div 
+        class="progress-fill" 
+        [style.width.%]="getTotalProgress()">
+      </div>
+    </div>
+    <div class="progress-text">
+      {{ getTotalAnsweredCount() }} de {{ getTotalQuestions() }} totales respondidas
+    </div>
   </div>
-  
+
+  <!-- Título del factor actual -->
+  <h2 class="factor-title">{{ factores[pasoActual].nombre }}</h2>
+
+  <!-- Contenedor de Preguntas -->
+  <div class="grid-container">
+    <div 
+      *ngFor="let q of factores[pasoActual].preguntas" 
+      class="question-card-wrapper"
+      [class.answered]="respuestas[q.id]">
+      
+      <div class="question-progress" *ngIf="respuestas[q.id]"></div>
+      
+      <app-tarjeta-preguntas
+        [preguntaId]="q.id"
+        [question]="q.question"
+        [options]="options"
+        [selectedOption]="respuestas[q.id] || ''"
+        (optionSelected)="onOptionSelected(q.id, $event)">
+      </app-tarjeta-preguntas>
+    </div>
+  </div>
+
   <!-- Botones de Navegación -->
   <div class="navigation-buttons">
-    <button (click)="anterior()" [disabled]="pasoActual === 0">Anterior</button>
-    <button (click)="siguiente()" [disabled]="pasoActual === factores.length - 1">Siguiente</button>
+    <button 
+      class="nav-button secondary" 
+      (click)="anterior()" 
+      [disabled]="pasoActual === 0">
+      ← Anterior
+    </button>
+    
+    <div class="nav-center">
+      <span class="progress-text">
+        {{ getAnsweredCount() }} de {{ factores[pasoActual].preguntas.length }} respondidas en este paso
+      </span>
+    </div>
+
+    <button 
+      *ngIf="pasoActual < factores.length - 1" 
+      class="nav-button secondary"
+      (click)="siguiente()">
+      {{ buttonNextText }} →
+    </button>
+
+    <button 
+      *ngIf="pasoActual === factores.length - 1" 
+      class="nav-button secondary"
+      (click)="finalizar()">
+      ✓ Finalizar
+    </button>
   </div>
-  
+</div>

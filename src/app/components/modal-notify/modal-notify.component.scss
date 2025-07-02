@@ -1,0 +1,45 @@
+.custom-modal{
+    padding: 0 !important;
+}
+
+.modal-header {
+    padding: 1rem;
+    //font-size: 1.5rem;
+    //font-weight: bold;
+  
+    &.success {
+      background-color: #4caf50;
+      color: #fff;
+    }
+  
+    &.info {
+      background-color: #2196f3;
+      color: #fff;
+    }
+  
+    &.warning {
+      background-color: #ff9800;
+      color: #fff;
+    }
+  
+    &.error {
+      background-color: #f44336;
+      color: #fff;
+    }
+  }
+  
+  .modal-body {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+  
+    button {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+  } 

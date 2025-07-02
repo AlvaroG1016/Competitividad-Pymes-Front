@@ -9,6 +9,8 @@ import { ComponentPortal } from '@angular/cdk/portal';
  *//* import { SpinnerOverlayComponent } from './components/controls/spinner-overlay/spinner-overlay.component';
  */
  import { environment } from '../../environments/environment';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalNotifyComponent } from '../components/modal-notify/modal-notify.component';
 
 @Injectable({
   providedIn: 'root',
@@ -508,7 +510,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
 
   /* Modal de notificacion Reutilizable  */
   openResultModal(
-    //dialog: MatDialog,
+    dialog: MatDialog,
     isSuccess: boolean,
     validationErrors?: string[],
     generalErrors?: string[],
@@ -535,7 +537,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
       }
     }
 
-   /*  const dialogRef = dialog.open(ModalNotifyComponent, {
+     const dialogRef = dialog.open(ModalNotifyComponent, {
       data: {
         title: isSuccess ? 'Éxito' : 'Error',
         message,
@@ -544,7 +546,7 @@ exportarExcel(serverDataReport:any, columnas:any, dialog?:any){
       },
     });
 
-    dialogRef.afterClosed().subscribe(() => {}); */
+    dialogRef.afterClosed().subscribe(() => {}); 
   }
 
   openConfirmationModal(

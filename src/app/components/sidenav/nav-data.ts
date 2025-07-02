@@ -40,43 +40,43 @@ export const navbarData: INavbarData[] = [
    
   },
   {
-    routeLink: 'formularios',
+    routeLink: 'opgestionservicio',
     icon: 'pi pi-chart-bar',
     label: 'Operacion y Gestion del servicio',
     
   },
   {
-    routeLink: 'iniciar-proceso',
+    routeLink: 'aseguramientocalidad',
     icon: 'pi pi-check-circle',
     label: 'Aseguramiento de la calidad',
     
   },
   {
-    routeLink: 'auditoria',
+    routeLink: 'mercadeocomercializacion',
     icon: 'pi pi-wallet',
     label: 'Gestion de mercadeo y comercializacion',
     
   },
   {
-    routeLink: 'tareas',
+    routeLink: 'estrategiagestionf',
     icon: 'pi pi-money-bill',
     label: 'Estrategia y Gestion financiera',
     
   },
   {
-    routeLink:'#',
+    routeLink:'grecursoshumanos',
     label: 'Gestion de recursos humanos',
     icon: 'pi pi-id-card',
     
   },
   {
-    routeLink:'#',
+    routeLink:'gambiental',
     icon: 'pi pi-cloud',
     label: 'Gestion ambiental',
     
   },
   {
-    routeLink:'#',
+    routeLink:'tsis',
     icon: 'pi pi-desktop',
     label: 'Tecnologia y sistemas de informacion',
     

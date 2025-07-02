@@ -39,6 +39,7 @@
                 }
               ],
               "styles": [
+                "@angular/material/prebuilt-themes/azure-blue.css",
                 "node_modules/primeicons/primeicons.css",
                 "src/styles.css"
               ],
@@ -99,9 +100,9 @@
 
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css",
               "node_modules/primeicons/primeicons.css"
-
             ],
             "scripts": []
           }

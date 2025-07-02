@@ -8,12 +8,17 @@
         <div *ngFor="let option of options" class="option">
           <p-radioButton
             name="{{ preguntaId }}"
-            [value]="option"
+            [value]="option.value"
             [(ngModel)]="selectedOption"
-            (onClick)="onOptionChange(option)"
-            [inputId]="preguntaId + option"
+            (onClick)="onOptionChange(option.value)"
+            [inputId]="preguntaId + option.value"
           ></p-radioButton>
-          <label [for]="preguntaId + option" class="option-label">{{ option }}</label>
+          <label
+            [for]="preguntaId + option.value"
+            class="option-label"
+          >
+            {{ option.label }}
+          </label>
         </div>
       </div>
     </ng-template>

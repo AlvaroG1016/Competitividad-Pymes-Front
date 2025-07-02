@@ -5,14 +5,29 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { TarjetaPreguntasComponent } from './components/tarjeta-preguntas/tarjeta-preguntas.component';
 import { CaracterizacionUsuarioComponent } from './components/caracterizacion-usuario/caracterizacion-usuario.component';
 import { QuestionlistComponent } from './components/questionlist/questionlist.component';
+import { GestionempresarialComponent } from './components/gestionempresarial/gestionempresarial.component';
+import { OperaciongestionservicioComponent } from './components/operaciongestionservicio/operaciongestionservicio.component';
+import { AseguramientocalidadComponent } from './components/aseguramientocalidad/aseguramientocalidad.component';
+import { MercadeocomercializacionComponent } from './components/mercadeocomercializacion/mercadeocomercializacion.component';
+import { EstrategiagestionfinancieraComponent } from './components/estrategiagestionfinanciera/estrategiagestionfinanciera.component';
+import { GrecursoshumanosComponent } from './components/grecursoshumanos/grecursoshumanos.component';
+import { GambientalComponent } from './components/gambiental/gambiental.component';
+import { TecnologiasisComponent } from './components/tecnologiasis/tecnologiasis.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full' }, 
   {path:'login', component: LoginComponent},
   {path:'home', component:LayoutComponent, 
-    children:[
+    children:[  
       {path:'caracterizacion', component:CaracterizacionUsuarioComponent},
-      {path:'gestionempresarial', component:QuestionlistComponent},
+      {path:'gestionempresarial', component:GestionempresarialComponent},
+      {path:'opgestionservicio', component:OperaciongestionservicioComponent},
+      {path:'aseguramientocalidad', component:AseguramientocalidadComponent},
+      {path:'mercadeocomercializacion', component:MercadeocomercializacionComponent},
+      {path:'estrategiagestionf', component:EstrategiagestionfinancieraComponent},
+      {path:'grecursoshumanos', component:GrecursoshumanosComponent},
+      {path:'gambiental', component:GambientalComponent},
+      {path:'tsis', component:TecnologiasisComponent},
 
     ]
   },

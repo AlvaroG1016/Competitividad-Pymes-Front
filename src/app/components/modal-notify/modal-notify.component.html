@@ -1,0 +1,14 @@
+<mat-dialog-content class="custom-modal">
+  <div [ngClass]="headerClass" class="modal-header">
+    <h2>{{ title }}</h2>
+  </div>
+  <div class="modal-body">
+    <p [innerHTML]="message"></p>
+  </div>
+  <div class="modal-footer">
+    <div *ngIf="data.type === 'warning'">
+      <button mat-button (click)="onclose()">Cancelar</button>
+    </div>
+    <button mat-button (click)="onAccept()">{{ buttonLabel }}</button>
+  </div>
+</mat-dialog-content>

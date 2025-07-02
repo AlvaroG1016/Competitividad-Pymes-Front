@@ -9,11 +9,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class TarjetaPreguntasComponent {
   @Input() preguntaId: string = ''; // Identificador único de la pregunta
   @Input() question: string = ''; // Recibe la pregunta
-  @Input() options: string[] = []; // Recibe las opciones
+  @Input() options: { label: string; value: number }[] = [];
   @Input() selectedOption: string = ''; // Recibe la opción seleccionada desde el padre
   @Output() optionSelected = new EventEmitter<string>(); // Emite la opción seleccionada
 
-  onOptionChange(option: string) {
+  onOptionChange(option: any) {
     this.selectedOption = option;
     this.optionSelected.emit(option);
   }
