@@ -155,6 +155,43 @@ export class CommonsLibService {
     });
   }
 
+  getWithHandling<T>(
+  url: string,
+  onSuccess: (response: T) => void,
+  onValidationError?: (errors: string[]) => void,
+  onError?: (errors: string[]) => void
+): void {
+  this.showSpinner(); // ← Mostrar spinner
+
+  this.get<T>(url).subscribe({
+    next: (res: any) => {
+      this.hideSpinner(); // ← Ocultar spinner
+      
+      if (res.Ok === false && res.Error?.length && res.ValidationErrors?.length == 0) {
+        onError?.(res.Error);
+      } else if (res.Ok === false && res.ValidationErrors?.length) {
+        console.warn('Errores de validación:', res.ValidationErrors);
+        onValidationError?.(res.ValidationErrors);
+      } else {
+        onSuccess(res);
+      }
+    },
+    error: (err) => {
+      this.hideSpinner(); // ← Ocultar spinner
+      
+      console.error('Error en la petición:', err);
+      if (err.error?.ValidationErrors?.length) {
+        onValidationError?.([`Error del servidor: ${err.error.ValidationErrors}`]);
+      } else if (err.error?.Error?.length) {
+        onError?.([`Error del servidor: ${err.error.Error}`]);
+      } else {
+        // Fallback para errores no estructurados
+        onError?.([`Error de conexión: ${err.message || 'Error desconocido'}`]);
+      }
+    },
+  });
+}
+
   /* -------- SPINNER CON MATERIAL - SÚPER SIMPLE ------------- */
   showSpinner() {
     if (!this.overlayRef) {

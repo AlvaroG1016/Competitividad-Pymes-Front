@@ -239,3 +239,168 @@
   text-align: center;
   color: #c2bdbd;
 }
+
+/* Agregar a sidenav.component.css */
+
+/* Estados de progreso */
+.sidenav-nav-link.locked {
+  color: #6c757d !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.sidenav-nav-link.completed {
+  background-color: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
+.sidenav-nav-link.completed:hover {
+  background-color: #c3e6cb;
+}
+
+.disabled-link {
+  pointer-events: none;
+  color: #6c757d !important;
+  opacity: 0.6;
+}
+
+/* Indicadores de estado */
+.status-icons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-locked {
+  color: #dc3545;
+  font-size: 14px;
+}
+
+.status-completed {
+  color: #28a745;
+  font-size: 14px;
+}
+
+.status-in-progress {
+  color: #ffc107;
+  font-size: 14px;
+}
+
+/* Indicador de progreso en texto */
+.progress-indicator {
+  font-size: 11px;
+  color: #6c757d;
+  font-weight: normal;
+  margin-left: 5px;
+}
+
+/* Animación para items desbloqueados */
+@keyframes unlock {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.sidenav-nav-link:not(.locked) {
+  animation: unlock 0.3s ease-out;
+}
+
+/* Efecto hover para items bloqueados */
+.sidenav-nav-link.locked:hover {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+}
+
+/* Tooltip para items bloqueados */
+.sidenav-nav-link.locked::after {
+  content: "Complete el factor anterior";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #333;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  margin-left: 10px;
+}
+
+.sidenav-nav-link.locked:hover::after {
+  opacity: 1;
+}
+
+/* Barra de progreso en el menu item */
+.sidenav-nav-link.with-progress {
+  position: relative;
+  overflow: hidden;
+}
+
+.sidenav-nav-link.with-progress::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  transition: width 0.3s ease;
+  width: var(--progress-width, 0%);
+}
+
+/* Estilos para sublevel con progreso */
+.sublevel-nav-link.locked {
+  color: #6c757d !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.sublevel-nav-link.completed {
+  background-color: #d4edda;
+  color: #155724;
+  border-left: 3px solid #28a745;
+}
+
+.sublevel-nav-link.completed:hover {
+  background-color: #c3e6cb;
+}
+
+/* Badge de estado en modo colapsado */
+.sidenav:not(.sidenav-collapsed) .status-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #28a745;
+}
+
+.sidenav:not(.sidenav-collapsed) .status-badge.locked {
+  background: #dc3545;
+}
+
+.sidenav:not(.sidenav-collapsed) .status-badge.in-progress {
+  background: #ffc107;
+}
+
+/* Transiciones suaves */
+.sidenav-nav-link {
+  transition: all 0.3s ease, background-color 0.2s ease;
+}
+
+.sublevel-nav-link {
+  transition: all 0.3s ease, background-color 0.2s ease;
+}

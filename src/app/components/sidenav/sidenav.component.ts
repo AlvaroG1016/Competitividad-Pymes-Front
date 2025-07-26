@@ -16,8 +16,8 @@ import {
 import { INavbarData, fadeInOut } from './helper';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-//import { BaseServiceService } from "src/app/services/base-service.service";
 import { navbarData } from './nav-data';
+import { ProgressLockService, ProgressFlow } from '../../services/progress-lock.service';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -31,10 +31,10 @@ interface MenuAPI {
   Nombre: string;
   Configuracion: string;
 }
+
 @Component({
   selector: 'app-sidenav',
   standalone: false,
-
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
   animations: [
@@ -52,14 +52,15 @@ interface MenuAPI {
     ]),
   ],
 })
-export class SidenavComponent {
+export class SidenavComponent implements OnInit, OnDestroy {
   private userPermissionSubscription: Subscription | null = null;
+  private progressSubscription: Subscription | null = null;
 
   @Output() onToggleSideNav: EventEmitter<SideNavToggle> = new EventEmitter();
   collapsed = false;
   screenWidth = 0;
   multiple = false;
-  navData;
+  navData: INavbarData[] = [];
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -73,28 +74,64 @@ export class SidenavComponent {
     }
   }
 
-  constructor(public router: Router) {}
-  /* constructor(public router: Router, private baseService: BaseServiceService) {}
-  ); */
+  constructor(
+    public router: Router,
+    private progressService: ProgressLockService
+  ) {}
 
   ngOnInit(): void {
-     this.screenWidth = window.innerWidth;
-    /*this.userPermissionSubscription = this.baseService.currentUserPermissions.subscribe(
-      (permissions) => {
-        
-        const transformedMenu = this.transformMenuFromAPI(permissions);
+    this.screenWidth = window.innerWidth;
 
-        this.navData = transformedMenu
-        console.log(transformedMenu);
-        
+    // Inicializar con datos base
+    this.navData = [...navbarData];
+
+    // Suscribirse a cambios de progreso PRIMERO
+    this.progressSubscription = this.progressService.progress$.subscribe(
+      (progressFlows) => {
+        this.updateNavigationWithProgress(progressFlows);
       }
-    ); */
-    this.navData = navbarData;
+    );
+
+    // Luego cargar progreso desde storage y backend
+    setTimeout(() => {
+      this.progressService.loadProgressFromStorage();
+      this.progressService.loadProgressFromBackend(5); // ID de encuesta actual
+    }, 100);
   }
 
   ngOnDestroy(): void {
-    if(this.userPermissionSubscription) this.userPermissionSubscription.unsubscribe();
+    if (this.userPermissionSubscription) {
+      this.userPermissionSubscription.unsubscribe();
+    }
+    if (this.progressSubscription) {
+      this.progressSubscription.unsubscribe();
+    }
   }
+
+  private updateNavigationWithProgress(progressFlows: Map<string, ProgressFlow>) {
+    const factorsFlow = progressFlows.get('factors');
+    if (!factorsFlow) return;
+
+    // Encontrar el índice del menú de evaluación
+    const evaluationMenuIndex = this.navData.findIndex(
+      item => item.label === 'Evaluación de Competitividad'
+    );
+
+    if (evaluationMenuIndex !== -1) {
+      // Convertir los pasos del flujo a elementos del menú
+      const factorMenuItems: INavbarData[] = factorsFlow.steps.map(step => ({
+        routeLink: step.routeLink,
+        icon: step.icon,
+        label: step.name,
+        isLocked: !step.isUnlocked,
+        isCompleted: step.isCompleted,
+        completionPercentage: step.completionPercentage
+      }));
+
+      this.navData[evaluationMenuIndex].items = factorMenuItems;
+    }
+  }
+
   expandSidenav(): void {
     this.collapsed = true;
     this.onToggleSideNav.emit({
@@ -120,6 +157,11 @@ export class SidenavComponent {
   }
 
   handleClick(item: INavbarData): void {
+    // Si el item está bloqueado, no permitir navegación
+    if (item.isLocked) {
+      return;
+    }
+
     if (!this.multiple) {
       for (let modelItem of this.navData) {
         if (item !== modelItem && modelItem.expanded) {
@@ -131,7 +173,30 @@ export class SidenavComponent {
   }
 
   getActiveClass(data: INavbarData): string {
+    if (data.isLocked) {
+      return 'locked';
+    }
+    if (data.isCompleted) {
+      return 'completed';
+    }
     return this.router.url.includes(data.routeLink) ? 'active' : '';
+  }
+
+  // Método para verificar si se puede navegar a una ruta
+  canNavigate(item: INavbarData): boolean {
+    return !item.isLocked;
+  }
+
+  // Método para manejar click en item de factor
+  onFactorClick(item: INavbarData, event: Event) {
+    if (item.isLocked) {
+      event.preventDefault();
+      event.stopPropagation();
+      // Opcional: mostrar tooltip o mensaje de por qué está bloqueado
+      console.log(`${item.label} está bloqueado. Complete el factor anterior primero.`);
+      return false;
+    }
+    return true;
   }
 
   private parseMenuConfig(configString: string): { iconName: string; ruta: string } {
@@ -143,8 +208,6 @@ export class SidenavComponent {
   }
 
   public transformMenuFromAPI(menuItems: MenuAPI[]): INavbarData[] {
-    // Función para construir el árbol del menú recursivamente
-      
     const buildMenuTree = (parentId: number | null): INavbarData[] => {
       return menuItems
         .filter(item => item.IdMenuPadre === parentId)
@@ -155,12 +218,10 @@ export class SidenavComponent {
             label: item.Nombre,
           };
 
-          // Agregar icono solo si existe en la configuración
           if (config.iconName) {
             menuItem.icon = config.iconName;
           }
 
-          // Si tiene hijos, procesarlos recursivamente
           if (item.HasChilds) {
             menuItem.items = buildMenuTree(item.Id);
           }
@@ -169,13 +230,10 @@ export class SidenavComponent {
         });
     };
 
-    // Comenzar con los elementos raíz (parentId = null)
     return buildMenuTree(null);
   }
 
-
-  tabs(){
+  tabs() {
     console.log('tabClicked');
-    
   }
 }

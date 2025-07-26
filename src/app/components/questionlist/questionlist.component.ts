@@ -1,6 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonsLibService } from '../../services/commons-lib.service';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { ProgressLockService } from '../../services/progress-lock.service';
 
 @Component({
   selector: 'app-questionlist',
@@ -8,8 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './questionlist.component.html',
   styleUrl: './questionlist.component.css',
 })
-export class QuestionlistComponent {
-  // SOLO CAMBIO: Valores corregidos con escalas de 25
+export class QuestionlistComponent implements OnInit {
+  // Valores corregidos: escalas de 25 (0, 25, 50, 75, 100)
   options = [
     { label: 'No existe', value: 0 },
     { label: 'Acción escrita', value: 25 },
@@ -21,14 +23,120 @@ export class QuestionlistComponent {
   buttonNextText = 'Siguiente';
   @Input() factores;
 
+  // Variables para manejar el progreso
+  currentFactorId: string = '';
+  currentRoute: string = '';
+  currentFactorIdBD: number = 0; // ID del factor en la BD
+  encuestaId: number = 5; // ID de la encuesta actual
+  
+  // Estados de carga
+  isLoadingResponses = false;
+  responsesLoaded = false;
+
   constructor(
     private readonly service: CommonsLibService,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private route: ActivatedRoute,
+    private progressService: ProgressLockService
   ) {}
+  
+  ngOnInit() {
+    // Obtener la ruta actual para determinar qué factor se está completando
+    this.currentRoute = this.route.snapshot.routeConfig?.path || '';
+    this.currentFactorId = this.getFactorIdFromRoute(this.currentRoute);
+    this.currentFactorIdBD = this.getFactorIdBD(this.currentRoute);
+    
+    console.log(`🔄 Iniciando factor: ${this.currentFactorId} (BD ID: ${this.currentFactorIdBD})`);
+    
+    // Cargar respuestas existentes para este factor
+    this.loadExistingResponses();
+  }
   
   pasoActual = 0;
   respuestas: { [key: string]: string } = {};
-  showInstructions = false; // Controla si se muestran las instrucciones
+  showInstructions = false;
+
+  // Cargar respuestas existentes del backend
+  private loadExistingResponses() {
+    if (!this.currentFactorIdBD || !this.encuestaId) {
+      console.log('❌ No se puede cargar respuestas: factor o encuesta no definidos');
+      return;
+    }
+
+    this.isLoadingResponses = true;
+    console.log(`🔄 Cargando respuestas existentes para factor ${this.currentFactorIdBD}, encuesta ${this.encuestaId}`);
+
+    // Usar getByIdWithHandling con null como ID y pasar los parámetros en la URL
+    this.service.getWithHandling(
+      `Respuesta/ObtenerRespuestasPorFactor?encuestaId=${this.encuestaId}&factorId=${this.currentFactorIdBD}`,
+      (response: any) => {
+        console.log('📥 Respuestas cargadas:', response);
+        this.processLoadedResponses(response);
+        this.isLoadingResponses = false;
+        this.responsesLoaded = true;
+      },
+      (validationErrors) => {
+        console.log('⚠️ No hay respuestas previas para este factor');
+        this.isLoadingResponses = false;
+        this.responsesLoaded = true;
+      },
+      (errors) => {
+        console.warn('💥 Error al cargar respuestas:', errors);
+        this.isLoadingResponses = false;
+        this.responsesLoaded = true;
+      }
+    );
+  
+  }
+
+  // Procesar las respuestas cargadas del backend
+  private processLoadedResponses(response: any) {
+    if (!response || !response.data || !Array.isArray(response.data) || response.data.length === 0) {
+      console.log('📭 No hay datos de respuestas');
+      return;
+    }
+
+    // Limpiar respuestas existentes
+    this.respuestas = {};
+
+    // Los datos vienen en response.data[0] que es un array de respuestas
+    const respuestasArray = response.data[0];
+    
+    if (!Array.isArray(respuestasArray)) {
+      console.log('📭 Estructura de datos incorrecta');
+      return;
+    }
+
+    console.log(`🔄 Procesando ${respuestasArray.length} respuestas del backend`);
+    
+    respuestasArray.forEach((respuesta: any) => {
+      if (respuesta.idPregunta && respuesta.valorRespuesta !== null && respuesta.valorRespuesta !== undefined) {
+        this.respuestas[respuesta.idPregunta] = respuesta.valorRespuesta.toString();
+        console.log(`✅ Respuesta cargada: ${respuesta.idPregunta} = ${respuesta.valorRespuesta}`);
+      }
+    });
+
+    console.log(`📊 Total respuestas cargadas: ${Object.keys(this.respuestas).length}`);
+    console.log('📋 Estado final respuestas:', this.respuestas);
+    
+    // Actualizar progreso parcial después de cargar
+    this.updatePartialProgress();
+  }
+
+  // Mapear ruta a ID de factor en la BD
+  private getFactorIdBD(route: string): number {
+    const routeToFactorIdMap: { [key: string]: number } = {
+      'gestionempresarial': 3,      // GE
+      'opgestionservicio': 4,       // OGS  
+      'aseguramientocalidad': 5,    // AC
+      'mercadeocomercializacion': 6, // GMC
+      'estrategiagestionf': 7,      // EGF
+      'grecursoshumanos': 8,        // GRH
+      'gambiental': 9,              // GA
+      'tsis': 10                    // TSI
+    };
+    return routeToFactorIdMap[route] || 0;
+  }
 
   toggleInstructions() {
     this.showInstructions = !this.showInstructions;
@@ -62,7 +170,7 @@ export class QuestionlistComponent {
 
     console.log('Formulario finalizado. Respuestas:', this.respuestas);
 
-    // SOLO CAMBIO: Validar valores con escalas de 25
+    // Validar que todos los valores sean válidos según la restricción CHECK
     const valoresPermitidos = [0, 25, 50, 75, 100];
     const payload = Object.entries(this.respuestas)
       .filter(([_, valor]) => valor !== '' && valor !== null && valor !== undefined)
@@ -74,7 +182,7 @@ export class QuestionlistComponent {
         }
 
         return {
-          idEncuesta: 5,
+          idEncuesta: this.encuestaId,
           idPregunta,
           valorRespuesta,
         };
@@ -85,8 +193,14 @@ export class QuestionlistComponent {
     this.service.postWithHandling(
       'Respuesta/ActualizarRespuestas',
       payload,
-      (res) => {
+      (res: any) => {
         console.log('Respuesta del servidor:', res);
+        
+        // Marcar factor como completado (100%) en el progress service
+        if (this.currentFactorId) {
+          this.progressService.completeStep('factors', this.currentFactorId, 100);
+        }
+        
         this.service.openResultModal(
           this.dialog,
           true,
@@ -94,7 +208,7 @@ export class QuestionlistComponent {
           null,
           true,
           false,
-          'Respuestas guardadas correctamente'
+          `Factor completado exitosamente`
         );
       },
       (validationErrors) => {
@@ -122,6 +236,21 @@ export class QuestionlistComponent {
     );
   }
 
+  // Mapear ruta a ID de factor para el progress service
+  private getFactorIdFromRoute(route: string): string {
+    const routeToFactorMap: { [key: string]: string } = {
+      'gestionempresarial': 'factor1',
+      'opgestionservicio': 'factor2',
+      'aseguramientocalidad': 'factor3',
+      'mercadeocomercializacion': 'factor4',
+      'estrategiagestionf': 'factor5',
+      'grecursoshumanos': 'factor6',
+      'gambiental': 'factor7',
+      'tsis': 'factor8'
+    };
+    return routeToFactorMap[route] || '';
+  }
+
   anterior() {
     if (this.pasoActual > 0) {
       this.pasoActual--;
@@ -132,7 +261,27 @@ export class QuestionlistComponent {
 
   onOptionSelected(preguntaId: string, value: any) {
     this.respuestas[preguntaId] = value.toString();
-    console.log(this.respuestas);
+    console.log('📝 Respuesta actualizada:', preguntaId, '=', value);
+    console.log('📊 Estado actual respuestas:', this.respuestas);
+    
+    // Actualizar progreso parcial mientras el usuario responde
+    this.updatePartialProgress();
+  }
+
+  // Actualizar progreso parcial del factor
+  private updatePartialProgress() {
+    if (!this.currentFactorId) return;
+
+    const totalQuestions = this.getTotalQuestions();
+    const answeredQuestions = this.getTotalAnsweredCount();
+    const progressPercentage = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
+
+    console.log(`📊 Progreso parcial: ${answeredQuestions}/${totalQuestions} = ${progressPercentage.toFixed(1)}%`);
+
+    // Solo actualizar si no está completado al 100%
+    if (progressPercentage < 100) {
+      this.progressService.completeStep('factors', this.currentFactorId, progressPercentage);
+    }
   }
 
   Math = Math;
@@ -161,7 +310,7 @@ export class QuestionlistComponent {
     );
   }
 
-  // NUEVO: Método para verificar si TODAS las preguntas del cuestionario están respondidas
+  // Método para verificar si TODAS las preguntas del cuestionario están respondidas
   isAllQuestionsAnswered(): boolean {
     if (!this.factores || this.factores.length === 0) return false;
     

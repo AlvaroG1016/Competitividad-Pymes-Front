@@ -1,145 +1,222 @@
 <div class="questionlist-container">
-  <!-- Botón de ayuda flotante -->
-  <div class="help-container">
-    <button 
-      class="help-button"
-      (click)="toggleInstructions()"
-      [attr.aria-expanded]="showInstructions"
-      [title]="showInstructions ? 'Ocultar indicaciones' : 'Ver indicaciones'">
-      <i class="pi pi-question-circle"></i>
-      <span>Indicaciones</span>
-      <i class="pi" [class.pi-chevron-up]="showInstructions" [class.pi-chevron-down]="!showInstructions"></i>
-    </button>
-    
-    <!-- Panel de instrucciones expandible -->
-    <div class="instructions-panel" [class.expanded]="showInstructions">
-      <div class="instructions-content">
-        <h3>Cómo responder las preguntas</h3>
-        <p>
-          Cada factor cuenta con una serie de variables para su medición, las cuales
-          incluyen indicadores representados en preguntas. Debes seleccionar una
-          respuesta según la siguiente escala:
-        </p>
-        <div class="scale-grid">
-          <div class="scale-item">
-            <div class="scale-number">1</div>
-            <div class="scale-content">
-              <strong>No existe</strong>
-              <span>No se ha contemplado en la organización.</span>
-            </div>
-          </div>
-          <div class="scale-item">
-            <div class="scale-number">2</div>
-            <div class="scale-content">
-              <strong>Acción escrita</strong>
-              <span>Existe, pero sin acciones en marcha por el momento.</span>
-            </div>
-          </div>
-          <div class="scale-item">
-            <div class="scale-number">3</div>
-            <div class="scale-content">
-              <strong>Inició pruebas</strong>
-              <span>Se han realizado pruebas o tiene un bajo nivel de implementación.</span>
-            </div>
-          </div>
-          <div class="scale-item">
-            <div class="scale-number">4</div>
-            <div class="scale-content">
-              <strong>En implementación</strong>
-              <span>Hay resultados parciales y está en proceso.</span>
-            </div>
-          </div>
-          <div class="scale-item">
-            <div class="scale-number">5</div>
-            <div class="scale-content">
-              <strong>Implementado con éxito</strong>
-              <span>Constituye un aspecto diferencial de la organización.</span>
-            </div>
-          </div>
-        </div>
-        <div class="instruction-note">
-          <i class="pi pi-info-circle"></i>
-          <span>Solo puedes elegir una opción por pregunta, seleccionando la que mejor represente la realidad de tu organización.</span>
-        </div>
-      </div>
+  
+  <!-- Indicador de carga de respuestas -->
+  <div *ngIf="isLoadingResponses" class="loading-indicator">
+    <div class="loading-content">
+      <i class="pi pi-spin pi-spinner"></i>
+      <span>Cargando respuestas existentes...</span>
     </div>
   </div>
 
-  <!-- Indicador de progreso -->
-  <div class="progress-indicator">
-    <div class="progress-text">
-      Paso {{ pasoActual + 1 }} de {{ factores.length }}
+  <!-- Contenido principal - solo mostrar cuando las respuestas estén cargadas -->
+  <div *ngIf="!isLoadingResponses && responsesLoaded">
+    
+    <!-- Botón de ayuda flotante -->
+    <div class="help-container">
+      <button 
+        class="help-button"
+        (click)="toggleInstructions()"
+        [attr.aria-expanded]="showInstructions"
+        [title]="showInstructions ? 'Ocultar indicaciones' : 'Ver indicaciones'">
+        <i class="pi pi-question-circle"></i>
+        <span>Indicaciones</span>
+        <i class="pi" [class.pi-chevron-up]="showInstructions" [class.pi-chevron-down]="!showInstructions"></i>
+      </button>
+      
+      <!-- Panel de instrucciones expandible -->
+      <div class="instructions-panel" [class.expanded]="showInstructions">
+        <div class="instructions-content">
+          <h3>Cómo responder las preguntas</h3>
+          <p>
+            Cada factor cuenta con una serie de variables para su medición, las cuales
+            incluyen indicadores representados en preguntas. Debes seleccionar una
+            respuesta según la siguiente escala:
+          </p>
+          <div class="scale-grid">
+            <div class="scale-item">
+              <div class="scale-number">1</div>
+              <div class="scale-content">
+                <strong>No existe</strong>
+                <span>No se ha contemplado en la organización.</span>
+              </div>
+            </div>
+            <div class="scale-item">
+              <div class="scale-number">2</div>
+              <div class="scale-content">
+                <strong>Acción escrita</strong>
+                <span>Existe, pero sin acciones en marcha por el momento.</span>
+              </div>
+            </div>
+            <div class="scale-item">
+              <div class="scale-number">3</div>
+              <div class="scale-content">
+                <strong>Inició pruebas</strong>
+                <span>Se han realizado pruebas o tiene un bajo nivel de implementación.</span>
+              </div>
+            </div>
+            <div class="scale-item">
+              <div class="scale-number">4</div>
+              <div class="scale-content">
+                <strong>En implementación</strong>
+                <span>Hay resultados parciales y está en proceso.</span>
+              </div>
+            </div>
+            <div class="scale-item">
+              <div class="scale-number">5</div>
+              <div class="scale-content">
+                <strong>Implementado con éxito</strong>
+                <span>Constituye un aspecto diferencial de la organización.</span>
+              </div>
+            </div>
+          </div>
+          <div class="instruction-note">
+            <i class="pi pi-info-circle"></i>
+            <span>Solo puedes elegir una opción por pregunta, seleccionando la que mejor represente la realidad de tu organización.</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="progress-bar">
+
+    <!-- Indicador de progreso -->
+    <div class="progress-indicator">
+      <div class="progress-text">
+        Paso {{ pasoActual + 1 }} de {{ factores.length }}
+        <span *ngIf="getTotalAnsweredCount() > 0" class="progress-badge">
+          ✓ {{ getTotalAnsweredCount() }} respuestas cargadas
+        </span>
+      </div>
+      <div class="progress-bar">
+        <div 
+          class="progress-fill" 
+          [style.width.%]="getTotalProgress()">
+        </div>
+      </div>
+      <div class="progress-text">
+        {{ getTotalAnsweredCount() }} de {{ getTotalQuestions() }} totales respondidas
+      </div>
+    </div>
+
+    <!-- Título del factor actual -->
+    <h2 class="factor-title">{{ factores[pasoActual].nombre }}</h2>
+
+    <!-- Contenedor de Preguntas -->
+    <div class="grid-container">
       <div 
-        class="progress-fill" 
-        [style.width.%]="getTotalProgress()">
+        *ngFor="let q of factores[pasoActual].preguntas" 
+        class="question-card-wrapper"
+        [class.answered]="respuestas[q.id]"
+        [class.pre-answered]="respuestas[q.id]">
+        
+        <div class="question-progress" *ngIf="respuestas[q.id]"></div>
+        
+        <!-- Indicador de respuesta previa -->
+        <div *ngIf="respuestas[q.id]" class="previous-answer-indicator">
+          <i class="pi pi-check-circle"></i>
+          <span>Respondida previamente</span>
+        </div>
+        
+        <app-tarjeta-preguntas
+          [preguntaId]="q.id"
+          [question]="q.question"
+          [options]="options"
+          [selectedOption]="respuestas[q.id] || ''"
+          (optionSelected)="onOptionSelected(q.id, $event)">
+        </app-tarjeta-preguntas>
       </div>
     </div>
-    <div class="progress-text">
-      {{ getTotalAnsweredCount() }} de {{ getTotalQuestions() }} totales respondidas
-    </div>
-  </div>
 
-  <!-- Título del factor actual -->
-  <h2 class="factor-title">{{ factores[pasoActual].nombre }}</h2>
-
-  <!-- Contenedor de Preguntas -->
-  <div class="grid-container">
-    <div 
-      *ngFor="let q of factores[pasoActual].preguntas" 
-      class="question-card-wrapper"
-      [class.answered]="respuestas[q.id]">
+    <!-- Botones de Navegación -->
+    <div class="navigation-buttons">
+      <button 
+        class="nav-button secondary" 
+        (click)="anterior()" 
+        [disabled]="pasoActual === 0">
+        ← Anterior
+      </button>
       
-      <div class="question-progress" *ngIf="respuestas[q.id]"></div>
-      
-      <app-tarjeta-preguntas
-        [preguntaId]="q.id"
-        [question]="q.question"
-        [options]="options"
-        [selectedOption]="respuestas[q.id] || ''"
-        (optionSelected)="onOptionSelected(q.id, $event)">
-      </app-tarjeta-preguntas>
-    </div>
-  </div>
+      <div class="nav-center">
+        <span class="progress-text">
+          {{ getAnsweredCount() }} de {{ factores[pasoActual].preguntas.length }} respondidas en este paso
+        </span>
+      </div>
 
-  <!-- Botones de Navegación -->
-  <div class="navigation-buttons">
-    <button 
-      class="nav-button secondary" 
-      (click)="anterior()" 
-      [disabled]="pasoActual === 0">
-      ← Anterior
-    </button>
-    
-    <div class="nav-center">
-      <span class="progress-text">
-        {{ getAnsweredCount() }} de {{ factores[pasoActual].preguntas.length }} respondidas en este paso
-      </span>
+      <button 
+        *ngIf="pasoActual < factores.length - 1" 
+        class="nav-button secondary"
+        (click)="siguiente()">
+        {{ buttonNextText }} →
+      </button>
+
+      <button 
+        *ngIf="pasoActual === factores.length - 1" 
+        class="nav-button"
+        [class.primary]="isAllQuestionsAnswered()"
+        [class.secondary]="!isAllQuestionsAnswered()"
+        [disabled]="!isAllQuestionsAnswered()"
+        (click)="finalizar()">
+        ✓ Finalizar
+      </button>
     </div>
 
-    <button 
-      *ngIf="pasoActual < factores.length - 1" 
-      class="nav-button secondary"
-      (click)="siguiente()">
-      {{ buttonNextText }} →
-    </button>
+    <!-- Mensaje de advertencia si faltan preguntas -->
+    <div *ngIf="pasoActual === factores.length - 1 && !isAllQuestionsAnswered()" 
+         class="warning-message">
+      <p>⚠️ Debes responder todas las preguntas antes de finalizar.</p>
+      <p>Faltan {{ getTotalQuestions() - getTotalAnsweredCount() }} preguntas por responder.</p>
+    </div>
 
-    <button 
-      *ngIf="pasoActual === factores.length - 1" 
-      class="nav-button"
-      [class.primary]="isAllQuestionsAnswered()"
-      [class.secondary]="!isAllQuestionsAnswered()"
-      [disabled]="!isAllQuestionsAnswered()"
-      (click)="finalizar()">
-      ✓ Finalizar
-    </button>
-  </div>
-
-  <!-- Mensaje de advertencia si faltan preguntas -->
-  <div *ngIf="pasoActual === factores.length - 1 && !isAllQuestionsAnswered()" 
-       class="warning-message">
-    <p>⚠️ Debes responder todas las preguntas antes de finalizar.</p>
-    <p>Faltan {{ getTotalQuestions() - getTotalAnsweredCount() }} preguntas por responder.</p>
   </div>
 </div>
+
+<style>
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 0;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.loading-content i {
+  font-size: 2rem;
+  color: #007bff;
+}
+
+.progress-badge {
+  background: #28a745;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+.previous-answer-indicator {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  z-index: 1;
+}
+
+.question-card-wrapper {
+  position: relative;
+}
+
+</style>

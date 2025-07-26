@@ -9,22 +9,45 @@
     <div class="scrollwrap scrollwrap_delayed">
         <ul class="sidenav-nav">
             <li class="sidenav-nav-item" *ngFor="let data of navData">
-                <a class="sidenav-nav-link" (click)="handleClick(data)"
-                    *ngIf="data.items && data.items.length > 0"
-                    [ngClass]="getActiveClass(data)">
+              
+                <!-- Item con subitems -->
+                <a class="sidenav-nav-link" 
+                   (click)="handleClick(data)"
+                   *ngIf="data.items && data.items.length > 0"
+                   [ngClass]="getActiveClass(data)">
                     <i class="sidenav-link-icon" [class]="data.icon"></i>
                     <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
                     <i *ngIf="data.items && collapsed" class="menu-collapse-icon"
                         [ngClass]="!data.expanded ? 'fal fa-angle-right':'fal fa-angle-down'"></i>
                 </a>
+
+                <!-- Item sin subitems -->
                 <a class="sidenav-nav-link"
-                    *ngIf="!data.items || (data.items && data.items.length === 0)"
-                    [routerLink]="[data.routeLink]"
-                    routerLinkActive="active"
-                    [routerLinkActiveOptions]="{exact:true}">
+                   *ngIf="!data.items || (data.items && data.items.length === 0)"
+                   [routerLink]="canNavigate(data) ? [data.routeLink] : null"
+                   (click)="onFactorClick(data, $event)"
+                   [ngClass]="getActiveClass(data)"
+                   [class.disabled-link]="data.isLocked">
                     <i class="sidenav-link-icon" [class]="data.icon"></i>
-                    <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
+                    <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">
+                        {{data.label}}
+                      
+                        <!-- Indicador de progreso -->
+                        <span *ngIf="data.completionPercentage !== undefined && collapsed" 
+                              class="progress-indicator">
+                            ({{data.completionPercentage}}%)
+                        </span>
+                    </span>
+                    <!-- Iconos de estado -->
+                    <div *ngIf="collapsed" class="status-icons">
+                        <i *ngIf="data.isLocked" class="pi pi-lock status-locked" title="Bloqueado"></i>
+                        <i *ngIf="data.isCompleted" class="pi pi-check-circle status-completed" title="Completado"></i>
+                        <i *ngIf="!data.isLocked && !data.isCompleted && data.completionPercentage > 0" 
+                           class="pi pi-clock status-in-progress" title="En progreso"></i>
+                    </div>
                 </a>
+
+                <!-- Submenu -->
                 <div *ngIf="collapsed && data.items && data.items.length > 0">
                     <app-sublevel-menu
                         [data]="data"
