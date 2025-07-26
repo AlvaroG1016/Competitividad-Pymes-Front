@@ -410,3 +410,260 @@
     padding: 0.75rem 1rem;
   }
 }
+
+/* ESTILOS DEL BOTÓN DE AYUDA - Integrado con tu diseño */
+.help-container {
+  position: relative;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.help-button {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  min-width: 160px;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+.help-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.help-button:hover::before {
+  left: 100%;
+}
+
+.help-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+}
+
+.help-button i:first-child {
+  font-size: 18px;
+}
+
+.help-button i:last-child {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+/* Panel de instrucciones */
+.instructions-panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+  opacity: 0;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.instructions-panel.expanded {
+  max-height: 800px;
+  opacity: 1;
+}
+
+.instructions-content {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.instructions-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+}
+
+.instructions-content h3 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.instructions-content h3::before {
+  content: '📋';
+  font-size: 1.25rem;
+}
+
+.instructions-content > p {
+  color: #64748b;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.scale-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.scale-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border-left: 4px solid #3b82f6;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.scale-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+}
+
+.scale-number {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.scale-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scale-content strong {
+  color: #1e293b;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.scale-content span {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.instruction-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.instruction-note i {
+  color: #3b82f6;
+  font-size: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.instruction-note span {
+  color: #1e293b;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Responsive para el botón de ayuda */
+@media (max-width: 768px) {
+  .help-button {
+    width: 100%;
+    justify-content: center;
+    min-width: auto;
+    max-width: 300px;
+  }
+  
+  .instructions-content {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+  
+  .scale-item {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .scale-number {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .help-button {
+    font-size: 13px;
+    padding: 12px 20px;
+  }
+  
+  .instructions-content {
+    padding: 1rem;
+  }
+  
+  .instructions-content h3 {
+    font-size: 1.25rem;
+  }
+  
+  .scale-item {
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .scale-number {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}

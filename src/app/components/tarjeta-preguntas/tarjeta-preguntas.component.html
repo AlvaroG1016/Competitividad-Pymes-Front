@@ -9,7 +9,7 @@
           <p-radioButton
             name="{{ preguntaId }}"
             [value]="option.value"
-            [(ngModel)]="selectedOption"
+            [ngModel]="currentSelectedOption"
             (onClick)="onOptionChange(option.value)"
             [inputId]="preguntaId + option.value"
           ></p-radioButton>
