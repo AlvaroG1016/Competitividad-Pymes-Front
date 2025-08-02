@@ -1,27 +1,29 @@
 import { animate, style, transition, trigger } from "@angular/animations";
 
 export interface INavbarData {
-  routeLink: string;
+    routeLink: string;
     icon?: string;
     label: string;
     expanded?: boolean;
     items?: INavbarData[];
-    isLocked?: boolean; // Nueva propiedad para items bloqueados
-    isCompleted?: boolean; // Nueva propiedad para items completados
-    completionPercentage?: number; // Porcentaje de completación
+    
+    // Nuevas propiedades para el sistema de restricciones
+    isLocked?: boolean;
+    isCompleted?: boolean;
+    completionPercentage?: number;
 }
 
 export const fadeInOut = trigger('fadeInOut', [
     transition(':enter', [
-      style({opacity:0}),
-      animate('350ms', 
-        style({opacity:1})
-      )
+        style({opacity: 0}),
+        animate('350ms',
+            style({opacity: 1})
+        )
     ]),
-     transition(':leave', [
-       style({opacity:1}),
-       animate('350ms', 
-         style({opacity:0})
-       )
-     ]) 
-  ])
+    transition(':leave', [
+        style({opacity: 1}),
+        animate('350ms',
+            style({opacity: 0})
+        )
+    ])
+]);

@@ -13,13 +13,17 @@ import { EstrategiagestionfinancieraComponent } from './components/estrategiages
 import { GrecursoshumanosComponent } from './components/grecursoshumanos/grecursoshumanos.component';
 import { GambientalComponent } from './components/gambiental/gambiental.component';
 import { TecnologiasisComponent } from './components/tecnologiasis/tecnologiasis.component';
+import { authGuard } from './guards/auth.guard';
+import { CaracterizacionEmpresaComponent } from './components/caracterizacion-empresa/caracterizacion-empresa.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full' }, 
   {path:'login', component: LoginComponent},
-  {path:'home', component:LayoutComponent, 
+  {path:'home', component:LayoutComponent,
+    canActivate: [authGuard], 
     children:[  
-      {path:'caracterizacion', component:CaracterizacionUsuarioComponent},
+      {path:'caracterizacionusuario', component:CaracterizacionUsuarioComponent},
+      {path:'caracterizacionempresa', component:CaracterizacionEmpresaComponent},
       {path:'gestionempresarial', component:GestionempresarialComponent},
       {path:'opgestionservicio', component:OperaciongestionservicioComponent},
       {path:'aseguramientocalidad', component:AseguramientocalidadComponent},

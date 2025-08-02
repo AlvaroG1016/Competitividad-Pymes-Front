@@ -6,13 +6,20 @@ export const navbarData: INavbarData[] = [
     icon: 'pi pi-cog',
     label: 'Configuración',
     items: [
+      // Estos items se actualizarán dinámicamente con el estado de progreso
       {
-        routeLink: 'configuracion/configempresa',
-        label: 'Configuración Empresa',
+        routeLink: '',
+        label: 'Caracterización Empresa',
+        isLocked: false, // Se actualizará dinámicamente
+        isCompleted: false, // Se actualizará dinámicamente
+        completionPercentage: 0 // Se actualizará dinámicamente
       },
       {
-        routeLink: 'configuracion/caracterizacionusuario',
+        routeLink: '',
         label: 'Caracterización usuario',
+        isLocked: true, // Se actualizará dinámicamente
+        isCompleted: false, // Se actualizará dinámicamente
+        completionPercentage: 0 // Se actualizará dinámicamente
       },
       {
         routeLink: '#',
@@ -35,6 +42,6 @@ export const navbarData: INavbarData[] = [
     routeLink: '#',
     icon: 'pi pi-chart-line',
     label: 'Evaluación de Competitividad',
-    items: [] // Se llenará dinámicamente
+    items: [] // Se llenará dinámicamente con los factores
   }
 ];

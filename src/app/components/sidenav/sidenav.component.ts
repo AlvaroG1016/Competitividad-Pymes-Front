@@ -95,7 +95,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     // Luego cargar progreso desde storage y backend
     setTimeout(() => {
       this.progressService.loadProgressFromStorage();
-      this.progressService.loadProgressFromBackend(5); // ID de encuesta actual
+      
+      // Cargar progreso completo (caracterizaciones + factores)
+      const userId = this.getCurrentUserId(); // Implementar según tu sistema de autenticación
+      this.progressService.loadProgressFromBackend(userId);
     }, 100);
   }
 
@@ -109,10 +112,72 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private updateNavigationWithProgress(progressFlows: Map<string, ProgressFlow>) {
+    console.log('🔄 Actualizando navegación con progreso completo...');
+    
+    // Actualizar configuración (caracterizaciones)
+    this.updateConfigurationMenu(progressFlows);
+    
+    // Actualizar evaluación de competitividad (factores)
+    this.updateCompetitivityMenu(progressFlows);
+    
+    console.log('✅ Navegación actualizada completamente');
+  }
+
+  private updateConfigurationMenu(progressFlows: Map<string, ProgressFlow>) {
+    const configFlow = progressFlows.get('configuration');
+    if (!configFlow) return;
+
+    // Encontrar el menú de configuración
+    const configMenuIndex = this.navData.findIndex(
+      item => item.label === 'Configuración'
+    );
+
+    if (configMenuIndex !== -1 && this.navData[configMenuIndex].items) {
+      // Actualizar caracterización de empresa
+      const companyCharacterizationIndex = this.navData[configMenuIndex].items!.findIndex(
+        item => item.label === 'Caracterización Empresa'
+      );
+      
+      if (companyCharacterizationIndex !== -1) {
+        const companyStep = configFlow.steps.find(s => s.id === 'company-characterization');
+        if (companyStep) {
+          const menuItem = this.navData[configMenuIndex].items![companyCharacterizationIndex];
+          menuItem.routeLink = companyStep.routeLink;
+          menuItem.icon = companyStep.icon;
+          menuItem.isLocked = !companyStep.isUnlocked;
+          menuItem.isCompleted = companyStep.isCompleted;
+          menuItem.completionPercentage = companyStep.completionPercentage;
+          
+          console.log(`📋 Caracterización Empresa: ${companyStep.isCompleted ? 'Completada' : 'Pendiente'}`);
+        }
+      }
+
+      // Actualizar caracterización de usuario
+      const userCharacterizationIndex = this.navData[configMenuIndex].items!.findIndex(
+        item => item.label === 'Caracterización usuario'
+      );
+      
+      if (userCharacterizationIndex !== -1) {
+        const userStep = configFlow.steps.find(s => s.id === 'user-characterization');
+        if (userStep) {
+          const menuItem = this.navData[configMenuIndex].items![userCharacterizationIndex];
+          menuItem.routeLink = userStep.routeLink;
+          menuItem.icon = userStep.icon;
+          menuItem.isLocked = !userStep.isUnlocked;
+          menuItem.isCompleted = userStep.isCompleted;
+          menuItem.completionPercentage = userStep.completionPercentage;
+          
+          console.log(`📋 Caracterización Usuario: ${userStep.isCompleted ? 'Completada' : userStep.isUnlocked ? 'Disponible' : 'Bloqueada'}`);
+        }
+      }
+    }
+  }
+
+  private updateCompetitivityMenu(progressFlows: Map<string, ProgressFlow>) {
     const factorsFlow = progressFlows.get('factors');
     if (!factorsFlow) return;
 
-    // Encontrar el índice del menú de evaluación
+    // Encontrar el menú de evaluación de competitividad
     const evaluationMenuIndex = this.navData.findIndex(
       item => item.label === 'Evaluación de Competitividad'
     );
@@ -129,7 +194,26 @@ export class SidenavComponent implements OnInit, OnDestroy {
       }));
 
       this.navData[evaluationMenuIndex].items = factorMenuItems;
+      
+      // Log del estado de factores
+      const unlockedFactors = factorMenuItems.filter(item => !item.isLocked).length;
+      const completedFactors = factorMenuItems.filter(item => item.isCompleted).length;
+      console.log(`📊 Factores: ${completedFactors} completados, ${unlockedFactors} desbloqueados de ${factorMenuItems.length} total`);
+      
+      // Verificar si los factores están disponibles
+      const factorsAvailable = this.progressService.areFactorsUnlocked();
+      console.log(`🎯 Factores disponibles: ${factorsAvailable ? 'SÍ' : 'NO (faltan caracterizaciones)'}`);
     }
+  }
+
+  // Método para obtener el ID del usuario actual
+  private getCurrentUserId(): number {
+    // TODO: Implementar según tu sistema de autenticación
+    // Por ejemplo, desde localStorage, sessionStorage, o un servicio de autenticación
+    // return this.authService.getCurrentUserId();
+    
+    // Por ahora retornamos un ID fijo para testing
+    return 1; // Cambiar por la implementación real
   }
 
   expandSidenav(): void {
@@ -159,6 +243,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   handleClick(item: INavbarData): void {
     // Si el item está bloqueado, no permitir navegación
     if (item.isLocked) {
+      this.showLockedMessage(item);
       return;
     }
 
@@ -192,11 +277,44 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (item.isLocked) {
       event.preventDefault();
       event.stopPropagation();
-      // Opcional: mostrar tooltip o mensaje de por qué está bloqueado
-      console.log(`${item.label} está bloqueado. Complete el factor anterior primero.`);
+      this.showLockedMessage(item);
       return false;
     }
     return true;
+  }
+
+  // Mostrar mensaje apropiado según el tipo de bloqueo
+  private showLockedMessage(item: INavbarData) {
+    const factorsFlow = this.progressService.getFlow('factors');
+    const configFlow = this.progressService.getFlow('configuration');
+    
+    if (!factorsFlow || !configFlow) return;
+    
+    // Verificar si es un factor
+    const isFactor = factorsFlow.steps.some(step => step.name === item.label);
+    
+    if (isFactor) {
+      // Es un factor bloqueado
+      const companyCompleted = this.progressService.isStepCompleted('configuration', 'company-characterization');
+      const userCompleted = this.progressService.isStepCompleted('configuration', 'user-characterization');
+      
+      if (!companyCompleted) {
+        console.log(`❌ ${item.label} está bloqueado. Complete primero la Caracterización de Empresa.`);
+        // TODO: Mostrar toast o modal
+      } else if (!userCompleted) {
+        console.log(`❌ ${item.label} está bloqueado. Complete primero la Caracterización de Usuario.`);
+        // TODO: Mostrar toast o modal
+      } else {
+        console.log(`❌ ${item.label} está bloqueado. Complete el factor anterior primero.`);
+        // TODO: Mostrar toast o modal
+      }
+    } else {
+      // Es una caracterización bloqueada
+      if (item.label === 'Caracterización usuario') {
+        console.log(`❌ ${item.label} está bloqueada. Complete primero la Caracterización de Empresa.`);
+        // TODO: Mostrar toast o modal
+      }
+    }
   }
 
   private parseMenuConfig(configString: string): { iconName: string; ruta: string } {
@@ -231,6 +349,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
     };
 
     return buildMenuTree(null);
+  }
+
+  // Método para debugging
+  debugProgressState() {
+    this.progressService.debugCurrentState();
   }
 
   tabs() {

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { environment } from '../../../environments/environment';
-import { AuthService } from '../../services/auth.service.ts';
+import { AuthService } from '../../services/auth.service.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -119,7 +119,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (res.ok) {
         this.loading = false;
         this.authService.setAuthentication(true);
-        this.router.navigateByUrl(`/home/caracterizacion`);
+        localStorage.setItem(environment.localStoragetoken, res.data[0].token);        
+        this.router.navigateByUrl(`/home`);
       }
     } catch (error: any) {
       this.loading = false;

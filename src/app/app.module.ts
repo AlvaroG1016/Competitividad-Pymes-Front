@@ -24,7 +24,7 @@ import { CardModule } from "primeng/card"
 import { TooltipModule } from 'primeng/tooltip';
 
 import { RouterModule } from '@angular/router'; 
-import { provideHttpClient } from '@angular/common/http'; 
+import { provideHttpClient, withInterceptors } from '@angular/common/http'; 
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { LayoutComponent } from './components/layout/layout.component';
 import { BodyComponent } from './components/body/body.component';
@@ -54,6 +54,8 @@ import { EstrategiagestionfinancieraComponent } from './components/estrategiages
 import { GrecursoshumanosComponent } from './components/grecursoshumanos/grecursoshumanos.component';
 import { GambientalComponent } from './components/gambiental/gambiental.component';
 import { TecnologiasisComponent } from './components/tecnologiasis/tecnologiasis.component';
+import { customInterceptor } from './services/custom.interceptor';
+import { CaracterizacionEmpresaComponent } from './components/caracterizacion-empresa/caracterizacion-empresa.component';
 
 
 
@@ -76,7 +78,8 @@ import { TecnologiasisComponent } from './components/tecnologiasis/tecnologiasis
     GrecursoshumanosComponent,
     GambientalComponent,
     TecnologiasisComponent,
-    ModalNotifyComponent
+    ModalNotifyComponent,
+    CaracterizacionEmpresaComponent
   ],
   imports: [
     BrowserModule,
@@ -119,7 +122,7 @@ import { TecnologiasisComponent } from './components/tecnologiasis/tecnologiasis
       },
     }),
     MessageService,
-    provideHttpClient()
+    provideHttpClient(withInterceptors([customInterceptor])),
   ],
   bootstrap: [AppComponent]
 })

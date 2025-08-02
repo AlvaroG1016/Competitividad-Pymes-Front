@@ -1,0 +1,355 @@
+<div class="survey-container">
+  <div class="survey-wrapper">
+    <h2 class="survey-title">Caracterización de Usuario</h2>
+
+    <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()" class="survey-form">
+      <div class="form-grid">
+        <!-- Primera columna -->
+        <div class="form-column">
+          <div
+            class="form-field"
+            [ngClass]="{
+              'ng-invalid':
+                surveyForm.get('name')?.invalid &&
+                surveyForm.get('name')?.touched,
+              'ng-valid':
+                surveyForm.get('name')?.valid && surveyForm.get('name')?.touched
+            }"
+          >
+            <label for="name">
+              <i
+                class="pi pi-user"
+                style="margin-right: 0.5rem; color: var(--primary-color)"
+              ></i>
+              Nombre de la empresa
+            </label>
+            <input
+              id="name"
+              type="text"
+              pInputText
+              formControlName="name"
+              placeholder="Ingrese nombre empresa"
+              autocomplete="name"
+            />
+            <small
+              *ngIf="
+                surveyForm.get('name')?.invalid &&
+                surveyForm.get('name')?.touched
+              "
+              class="error-text"
+            >
+              <i
+                class="pi pi-exclamation-triangle"
+                style="margin-right: 0.25rem"
+              ></i>
+              El nombre es requerido y debe tener al menos 3 caracteres
+            </small>
+          </div>
+
+          <div
+            class="form-field"
+            [ngClass]="{
+              'ng-invalid':
+                surveyForm.get('location')?.invalid &&
+                surveyForm.get('location')?.touched,
+              'ng-valid':
+                surveyForm.get('location')?.valid &&
+                surveyForm.get('location')?.touched
+            }"
+          >
+            <label for="location">
+              <i
+                class="pi pi-map"
+                style="margin-right: 0.5rem; color: var(--primary-color)"
+              ></i>
+              Ciudad o Municipio
+            </label>
+            <input
+              id="location"
+              type="text"
+              pInputText
+              formControlName="location"
+              placeholder="Ingrese la ciudad o municipio"
+              autocomplete="address"
+            />
+            <small
+              *ngIf="
+                surveyForm.get('location')?.invalid &&
+                surveyForm.get('location')?.touched
+              "
+              class="error-text"
+            >
+              <i
+                class="pi pi-exclamation-triangle"
+                style="margin-right: 0.25rem"
+              ></i>
+              La ciudad o municipio es requerido
+            </small>
+          </div>
+
+          <div
+            class="form-field"
+            [ngClass]="{
+              'ng-invalid':
+                surveyForm.get('address')?.invalid &&
+                surveyForm.get('address')?.touched,
+              'ng-valid':
+                surveyForm.get('address')?.valid &&
+                surveyForm.get('address')?.touched
+            }"
+          >
+            <label for="address">
+              <i
+                class="pi pi-map"
+                style="margin-right: 0.5rem; color: var(--primary-color)"
+              ></i>
+              Dirección de la Empresa
+            </label>
+            <input
+              id="address"
+              type="text"
+              pInputText
+              formControlName="address"
+              placeholder="Ingrese la dirección de la empresa"
+              autocomplete="address"
+            />
+            <small
+              *ngIf="
+                surveyForm.get('address')?.invalid &&
+                surveyForm.get('address')?.touched
+              "
+              class="error-text"
+            >
+              <i
+                class="pi pi-exclamation-triangle"
+                style="margin-right: 0.25rem"
+              ></i>
+              La dirección es requerida
+            </small>
+          </div>
+        </div>
+
+        <!-- Segunda columna -->
+        <div class="form-column">
+          <div
+            class="form-field"
+            [ngClass]="{
+              'ng-invalid':
+                surveyForm.get('institutionalEmail')?.invalid &&
+                surveyForm.get('institutionalEmail')?.touched,
+              'ng-valid':
+                surveyForm.get('institutionalEmail')?.valid &&
+                surveyForm.get('institutionalEmail')?.touched
+            }"
+          >
+            <label for="institutionalEmail">
+              <i
+                class="pi pi-envelope"
+                style="margin-right: 0.5rem; color: var(--primary-color)"
+              ></i>
+              Correo Contacto Empresarial
+            </label>
+            <input
+              id="institutionalEmail"
+              type="email"
+              pInputText
+              formControlName="institutionalEmail"
+              placeholder="nombre@empresa.com"
+              autocomplete="work email"
+            />
+            <small
+              *ngIf="
+                surveyForm.get('institutionalEmail')?.invalid &&
+                surveyForm.get('institutionalEmail')?.touched
+              "
+              class="error-text"
+            >
+              <i
+                class="pi pi-exclamation-triangle"
+                style="margin-right: 0.25rem"
+              ></i>
+              <span
+                *ngIf="surveyForm.get('institutionalEmail')?.errors?.['required']"
+              >
+                El correo es requerido
+              </span>
+              <span
+                *ngIf="surveyForm.get('institutionalEmail')?.errors?.['email']"
+              >
+                Ingrese un correo electrónico válido
+              </span>
+            </small>
+          </div>
+
+          <div
+            class="form-field"
+            [ngClass]="{
+              'ng-invalid':
+                surveyForm.get('presencia')?.invalid &&
+                surveyForm.get('presencia')?.touched,
+              'ng-valid':
+                surveyForm.get('presencia')?.valid &&
+                surveyForm.get('presencia')?.touched
+            }"
+          >
+            <label for="presencia">
+              <i
+                class="pi pi-briefcase"
+                style="margin-right: 0.5rem; color: var(--primary-color)"
+              ></i>
+              Tiempo de Presencia en Mercado
+            </label>
+            <input
+              id="presencia"
+              type="text"
+              pInputText
+              formControlName="presencia"
+              placeholder="Ingrese el tiempo de presencia en mercado"
+              autocomplete="organization-title"
+            />
+            <small
+              *ngIf="
+                surveyForm.get('presencia')?.invalid &&
+                surveyForm.get('presencia')?.touched
+              "
+              class="error-text"
+            >
+              <i
+                class="pi pi-exclamation-triangle"
+                style="margin-right: 0.25rem"
+              ></i>
+              El tiempo de presencia es requerido
+            </small>
+          </div>
+          <div
+            class="form-field"
+            [ngClass]="{
+              'ng-invalid':
+                surveyForm.get('telefono')?.invalid &&
+                surveyForm.get('telefono')?.touched,
+              'ng-valid':
+                surveyForm.get('telefono')?.valid &&
+                surveyForm.get('telefono')?.touched
+            }"
+          >
+            <label for="telefono">
+              <i
+                class="pi pi-briefcase"
+                style="margin-right: 0.5rem; color: var(--primary-color)"
+              ></i>
+              Telefono
+            </label>
+            <input
+              id="telefono"
+              type="text"
+              pInputText
+              formControlName="telefono"
+              placeholder="Ingrese el teléfono"
+              autocomplete="organization-title"
+            />
+            <small
+              *ngIf="
+                surveyForm.get('telefono')?.invalid &&
+                surveyForm.get('telefono')?.touched
+              "
+              class="error-text"
+            >
+              <i
+                class="pi pi-exclamation-triangle"
+                style="margin-right: 0.25rem"
+              ></i>
+              El teléfono es requerido
+            </small>
+          </div>
+
+          <div
+            class="form-field"
+            [ngClass]="{
+              'ng-invalid':
+                surveyForm.get('clasificacion')?.invalid &&
+                surveyForm.get('clasificacion')?.touched,
+              'ng-valid':
+                surveyForm.get('clasificacion')?.valid &&
+                surveyForm.get('clasificacion')?.touched
+            }"
+          >
+            <label for="clasificacion">
+              <i
+                class="pi pi-users"
+                style="margin-right: 0.5rem; color: var(--primary-color)"
+              ></i>
+              Clasificacion de la empresa
+            </label>
+            <p-dropdown
+              id="clasificacion"
+              [options]="clasificacionOptions"
+              formControlName="clasificacion"
+              placeholder="Seleccione la clasificación"
+              [showClear]="true"
+            ></p-dropdown>
+            <small
+              *ngIf="
+                surveyForm.get('clasificacion')?.invalid &&
+                surveyForm.get('clasificacion')?.touched
+              "
+              class="error-text"
+            >
+              <i
+                class="pi pi-exclamation-triangle"
+                style="margin-right: 0.25rem"
+              ></i>
+              Debe seleccionar una clasificación
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indicador de progreso del formulario - MOVIDO FUERA DEL GRID -->
+      <div
+        class="form-progress"
+        *ngIf="getFormProgress() > 0 && getFormProgress() < 100"
+      >
+        <div class="progress-info">
+          <span class="progress-text">
+            <i
+              class="pi pi-info-circle"
+              style="margin-right: 0.5rem; color: var(--primary-color)"
+            ></i>
+            Progreso del formulario: {{ getFormProgress() }}%
+          </span>
+        </div>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="getFormProgress()"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Acciones del formulario -->
+      <div class="form-actions">
+        <p-button
+          type="submit"
+          [label]="
+            surveyForm.valid ? 'Enviar Encuesta' : 'Complete todos los campos'
+          "
+          [disabled]="surveyForm.invalid"
+          [loading]="isSubmitting"
+          loadingIcon="pi pi-spin pi-spinner"
+          icon="pi pi-send"
+          iconPos="right"
+          *ngIf="!esCaracterizado"
+        >
+        </p-button>
+      </div>
+
+      <!-- Mensaje de éxito temporal (aparece y desaparece automáticamente) -->
+      <div class="form-info" *ngIf="showSuccessIndicator && !esCaracterizado">
+        <div class="success-message">
+          <i class="pi pi-check-circle"></i>
+          <span>¡Formulario completo y listo para enviar!</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
