@@ -46,7 +46,7 @@ export class QuestionlistComponent implements OnInit {
     this.currentFactorId = this.getFactorIdFromRoute(this.currentRoute);
     this.currentFactorIdBD = this.getFactorIdBD(this.currentRoute);
     
-    console.log(`🔄 Iniciando factor: ${this.currentFactorId} (BD ID: ${this.currentFactorIdBD})`);
+
     
     // Cargar respuestas existentes para este factor
     this.loadExistingResponses();
@@ -59,29 +59,29 @@ export class QuestionlistComponent implements OnInit {
   // Cargar respuestas existentes del backend
   private loadExistingResponses() {
     if (!this.currentFactorIdBD || !this.encuestaId) {
-      console.log('❌ No se puede cargar respuestas: factor o encuesta no definidos');
+
       return;
     }
 
     this.isLoadingResponses = true;
-    console.log(`🔄 Cargando respuestas existentes para factor ${this.currentFactorIdBD}, encuesta ${this.encuestaId}`);
+
 
     // Usar getByIdWithHandling con null como ID y pasar los parámetros en la URL
     this.service.getWithHandling(
       `Respuesta/ObtenerRespuestasPorFactor?encuestaId=${this.encuestaId}&factorId=${this.currentFactorIdBD}`,
       (response: any) => {
-        console.log('📥 Respuestas cargadas:', response);
+
         this.processLoadedResponses(response);
         this.isLoadingResponses = false;
         this.responsesLoaded = true;
       },
       (validationErrors) => {
-        console.log('⚠️ No hay respuestas previas para este factor');
+
         this.isLoadingResponses = false;
         this.responsesLoaded = true;
       },
       (errors) => {
-        console.warn('💥 Error al cargar respuestas:', errors);
+
         this.isLoadingResponses = false;
         this.responsesLoaded = true;
       }
@@ -92,7 +92,7 @@ export class QuestionlistComponent implements OnInit {
   // Procesar las respuestas cargadas del backend
   private processLoadedResponses(response: any) {
     if (!response || !response.data || !Array.isArray(response.data) || response.data.length === 0) {
-      console.log('📭 No hay datos de respuestas');
+
       return;
     }
 
@@ -103,21 +103,21 @@ export class QuestionlistComponent implements OnInit {
     const respuestasArray = response.data[0];
     
     if (!Array.isArray(respuestasArray)) {
-      console.log('📭 Estructura de datos incorrecta');
+
       return;
     }
 
-    console.log(`🔄 Procesando ${respuestasArray.length} respuestas del backend`);
+
     
     respuestasArray.forEach((respuesta: any) => {
       if (respuesta.idPregunta && respuesta.valorRespuesta !== null && respuesta.valorRespuesta !== undefined) {
         this.respuestas[respuesta.idPregunta] = respuesta.valorRespuesta.toString();
-        console.log(`✅ Respuesta cargada: ${respuesta.idPregunta} = ${respuesta.valorRespuesta}`);
+
       }
     });
 
-    console.log(`📊 Total respuestas cargadas: ${Object.keys(this.respuestas).length}`);
-    console.log('📋 Estado final respuestas:', this.respuestas);
+
+
     
     // Actualizar progreso parcial después de cargar
     this.updatePartialProgress();
@@ -168,7 +168,7 @@ export class QuestionlistComponent implements OnInit {
       return;
     }
 
-    console.log('Formulario finalizado. Respuestas:', this.respuestas);
+
 
     // Validar que todos los valores sean válidos según la restricción CHECK
     const valoresPermitidos = [0, 25, 50, 75, 100];
@@ -188,13 +188,13 @@ export class QuestionlistComponent implements OnInit {
         };
       });
 
-    console.log('Payload a enviar:', payload);
+
 
     this.service.postWithHandling(
       'Respuesta/ActualizarRespuestas',
       payload,
       (res: any) => {
-        console.log('Respuesta del servidor:', res);
+
         
         // Marcar factor como completado (100%) en el progress service
         if (this.currentFactorId) {
@@ -230,7 +230,7 @@ export class QuestionlistComponent implements OnInit {
         );
       },
       (error) => {
-        console.error('Error completo:', error);
+
         this.service.openResultModal(this.dialog, false, null, error);
       }
     );
@@ -261,8 +261,8 @@ export class QuestionlistComponent implements OnInit {
 
   onOptionSelected(preguntaId: string, value: any) {
     this.respuestas[preguntaId] = value.toString();
-    console.log('📝 Respuesta actualizada:', preguntaId, '=', value);
-    console.log('📊 Estado actual respuestas:', this.respuestas);
+
+
     
     // Actualizar progreso parcial mientras el usuario responde
     this.updatePartialProgress();
@@ -276,7 +276,7 @@ export class QuestionlistComponent implements OnInit {
     const answeredQuestions = this.getTotalAnsweredCount();
     const progressPercentage = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
 
-    console.log(`📊 Progreso parcial: ${answeredQuestions}/${totalQuestions} = ${progressPercentage.toFixed(1)}%`);
+
 
     // Solo actualizar si no está completado al 100%
     if (progressPercentage < 100) {

@@ -112,7 +112,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private updateNavigationWithProgress(progressFlows: Map<string, ProgressFlow>) {
-    console.log('🔄 Actualizando navegación con progreso completo...');
+
     
     // Actualizar configuración (caracterizaciones)
     this.updateConfigurationMenu(progressFlows);
@@ -120,7 +120,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     // Actualizar evaluación de competitividad (factores)
     this.updateCompetitivityMenu(progressFlows);
     
-    console.log('✅ Navegación actualizada completamente');
+
   }
 
   private updateConfigurationMenu(progressFlows: Map<string, ProgressFlow>) {
@@ -148,7 +148,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           menuItem.isCompleted = companyStep.isCompleted;
           menuItem.completionPercentage = companyStep.completionPercentage;
           
-          console.log(`📋 Caracterización Empresa: ${companyStep.isCompleted ? 'Completada' : 'Pendiente'}`);
+
         }
       }
 
@@ -167,7 +167,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           menuItem.isCompleted = userStep.isCompleted;
           menuItem.completionPercentage = userStep.completionPercentage;
           
-          console.log(`📋 Caracterización Usuario: ${userStep.isCompleted ? 'Completada' : userStep.isUnlocked ? 'Disponible' : 'Bloqueada'}`);
+
         }
       }
     }
@@ -198,11 +198,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
       // Log del estado de factores
       const unlockedFactors = factorMenuItems.filter(item => !item.isLocked).length;
       const completedFactors = factorMenuItems.filter(item => item.isCompleted).length;
-      console.log(`📊 Factores: ${completedFactors} completados, ${unlockedFactors} desbloqueados de ${factorMenuItems.length} total`);
+
       
       // Verificar si los factores están disponibles
       const factorsAvailable = this.progressService.areFactorsUnlocked();
-      console.log(`🎯 Factores disponibles: ${factorsAvailable ? 'SÍ' : 'NO (faltan caracterizaciones)'}`);
+
     }
   }
 
@@ -299,19 +299,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
       const userCompleted = this.progressService.isStepCompleted('configuration', 'user-characterization');
       
       if (!companyCompleted) {
-        console.log(`❌ ${item.label} está bloqueado. Complete primero la Caracterización de Empresa.`);
+
         // TODO: Mostrar toast o modal
       } else if (!userCompleted) {
-        console.log(`❌ ${item.label} está bloqueado. Complete primero la Caracterización de Usuario.`);
+
         // TODO: Mostrar toast o modal
       } else {
-        console.log(`❌ ${item.label} está bloqueado. Complete el factor anterior primero.`);
+
         // TODO: Mostrar toast o modal
       }
     } else {
       // Es una caracterización bloqueada
       if (item.label === 'Caracterización usuario') {
-        console.log(`❌ ${item.label} está bloqueada. Complete primero la Caracterización de Empresa.`);
+
         // TODO: Mostrar toast o modal
       }
     }
@@ -357,6 +357,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   tabs() {
-    console.log('tabClicked');
+
   }
 }

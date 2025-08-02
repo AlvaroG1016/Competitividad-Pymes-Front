@@ -187,7 +187,7 @@ export class CaracterizacionUsuarioComponent implements OnInit {
       // Simular procesamiento del formulario
       await this.processFormSubmission();
       
-      console.log('Datos del formulario:', this.surveyForm.value);
+
       
       // Aquí puedes agregar la lógica para enviar los datos al servidor
       // Por ejemplo: await this.userService.submitCharacterization(this.surveyForm.value);
@@ -196,7 +196,7 @@ export class CaracterizacionUsuarioComponent implements OnInit {
       this.resetForm();
       
     } catch (error) {
-      console.error('Error al enviar el formulario:', error);
+
       this.showErrorMessage();
     } finally {
       this.isSubmitting = false;
@@ -231,7 +231,7 @@ export class CaracterizacionUsuarioComponent implements OnInit {
    */
   private showSuccessMessage(): void {
     // Implementar notificación de éxito
-    console.log('¡Formulario enviado exitosamente!');
+
     // Ejemplo con PrimeNG Toast:
     // this.messageService.add({
     //   severity: 'success', 
@@ -245,7 +245,7 @@ export class CaracterizacionUsuarioComponent implements OnInit {
    */
   private showErrorMessage(): void {
     // Implementar notificación de error
-    console.error('Error al enviar el formulario');
+
     // Ejemplo con PrimeNG Toast:
     // this.messageService.add({
     //   severity: 'error', 
@@ -306,7 +306,7 @@ export class CaracterizacionUsuarioComponent implements OnInit {
     
     if (field && field.valid && field.touched) {
       // Implementar lógica adicional si es necesario
-      console.log(`Campo ${fieldName} válido:`, field.value);
+
     }
   }
 

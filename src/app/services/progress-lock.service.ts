@@ -165,7 +165,7 @@ export class ProgressLockService {
   // Cargar progreso completo desde el backend
   async loadProgressFromBackend(userId: number) {
     try {
-      console.log('🔄 Cargando progreso completo desde backend para usuario:', userId);
+
       
       // Cargar caracterizaciones
       await this.loadCharacterizationsProgress(userId);
@@ -177,7 +177,7 @@ export class ProgressLockService {
       this.applyUnlockLogic();
       
     } catch (error) {
-      console.warn('💥 Error al cargar progreso completo:', error);
+
       this.resetToInitialState();
     }
   }
@@ -189,7 +189,7 @@ export class ProgressLockService {
         this.commonsService.getWithHandling(
             'Caracterizacion/VerificarCaracterizacionEmpresa',
             (response: any) => {
-                console.log('📥 Respuesta caracterización empresa:', response);
+
                 const configFlow = this.progressFlows.get('configuration');
                 if (configFlow && response?.ok && response?.data && response.data.length > 0) {
                     const caracterizacionData = response.data[0]; // Tomar el primer elemento del array
@@ -197,17 +197,17 @@ export class ProgressLockService {
                     if (companyStep) {
                         companyStep.isCompleted = caracterizacionData.completed || false;
                         companyStep.completionPercentage = caracterizacionData.percentage || 0;
-                        console.log(`✅ Caracterización Empresa: ${caracterizacionData.completed ? 'Completada' : 'Pendiente'} (${caracterizacionData.percentage}%)`);
+
                     }
                 }
                 this.applyUnlockLogic();
             },
             (validationErrors) => {
-                console.log('⚠️ Caracterización de empresa no completada');
+
                 this.ensureCompanyCharacterizationNotCompleted();
             },
             (errors) => {
-                console.warn('💥 Error al verificar caracterización de empresa:', errors);
+
                 this.ensureCompanyCharacterizationNotCompleted();
             }
         );
@@ -216,7 +216,7 @@ export class ProgressLockService {
         this.commonsService.getWithHandling(
             'Caracterizacion/VerificarCaracterizacionUsuario',
             (response: any) => {
-                console.log('📥 Respuesta caracterización usuario:', response);
+
                 const configFlow = this.progressFlows.get('configuration');
                 if (configFlow && response?.ok && response?.data && response.data.length > 0) {
                     const caracterizacionData = response.data[0]; // Tomar el primer elemento del array
@@ -224,23 +224,23 @@ export class ProgressLockService {
                     if (userStep) {
                         userStep.isCompleted = caracterizacionData.completed || false;
                         userStep.completionPercentage = caracterizacionData.percentage || 0;
-                        console.log(`✅ Caracterización Usuario: ${caracterizacionData.completed ? 'Completada' : 'Pendiente'} (${caracterizacionData.percentage}%)`);
+
                     }
                 }
                 this.applyUnlockLogic();
             },
             (validationErrors) => {
-                console.log('⚠️ Caracterización de usuario no completada');
+
                 this.ensureUserCharacterizationNotCompleted();
             },
             (errors) => {
-                console.warn('💥 Error al verificar caracterización de usuario:', errors);
+
                 this.ensureUserCharacterizationNotCompleted();
             }
         );
 
     } catch (error) {
-        console.warn('💥 Error al cargar caracterizaciones:', error);
+
     }
 }
 
@@ -272,38 +272,38 @@ private ensureUserCharacterizationNotCompleted() {
   // Cargar progreso de factores (código existente adaptado)
   private async loadFactorsProgress(encuestaId: number) {
     try {
-      console.log('🔄 Cargando progreso de factores desde backend para encuesta:', encuestaId);
+
       
       this.commonsService.getByIdWithHandling(
         'Respuesta/ObtenerResultadosEncuesta',
         encuestaId,
         (response: any) => {
-          console.log('📥 Respuesta factores del backend:', response);
+
           
           let resultadosData = this.extractResultadosData(response);
           
           if (resultadosData && resultadosData.resultadosPorFactor && resultadosData.resultadosPorFactor.length > 0) {
-            console.log('✅ Encontrados factores completados en el backend:', resultadosData.resultadosPorFactor);
+
             this.updateFactorsFromBackendData(resultadosData);
           } else {
-            console.log('⚠️ No hay factores completados en el backend');
+
           }
         },
         (validationErrors) => {
-          console.log('❌ No se encontraron resultados de factores previos');
+
         },
         (errors) => {
-          console.warn('💥 Error al cargar progreso de factores:', errors);
+
         }
       );
     } catch (error) {
-      console.warn('💥 Error al cargar progreso de factores desde backend:', error);
+
     }
   }
 
   // Aplicar lógica completa de desbloqueo
   private applyUnlockLogic() {
-    console.log('🔓 Aplicando lógica completa de desbloqueo...');
+
     
     const configFlow = this.progressFlows.get('configuration');
     const factorsFlow = this.progressFlows.get('factors');
@@ -316,18 +316,18 @@ private ensureUserCharacterizationNotCompleted() {
     
     if (companyStep && userStep) {
       userStep.isUnlocked = companyStep.isCompleted;
-      console.log(`${userStep.isUnlocked ? '🔓' : '🔒'} Caracterización Usuario: ${userStep.isUnlocked ? 'Desbloqueada' : 'Bloqueada'}`);
+
     }
 
     // 2. Verificar si ambas caracterizaciones están completas
     const bothCharacterizationsCompleted = companyStep?.isCompleted && userStep?.isCompleted;
-    console.log(`📋 Ambas caracterizaciones completas: ${bothCharacterizationsCompleted}`);
+
 
     // 3. Desbloquear primer factor solo si ambas caracterizaciones están completas
     const firstFactor = factorsFlow.steps[0];
     if (firstFactor) {
       firstFactor.isUnlocked = bothCharacterizationsCompleted;
-      console.log(`${firstFactor.isUnlocked ? '🔓' : '🔒'} ${firstFactor.name}: ${firstFactor.isUnlocked ? 'Desbloqueado' : 'Bloqueado'}`);
+
     }
 
     // 4. Desbloquear factores secuencialmente
@@ -337,12 +337,12 @@ private ensureUserCharacterizationNotCompleted() {
     this.progressSubject.next(this.progressFlows);
     this.saveProgress();
     
-    console.log('✅ Lógica de desbloqueo aplicada completamente');
+
   }
 
   // Resetear a estado inicial
   private resetToInitialState() {
-    console.log('🔄 Reseteando a estado inicial...');
+
     
     const configFlow = this.progressFlows.get('configuration');
     if (configFlow) {
@@ -364,17 +364,17 @@ private ensureUserCharacterizationNotCompleted() {
 
     this.progressSubject.next(this.progressFlows);
     this.saveProgress();
-    console.log('✅ Estado inicial aplicado');
+
   }
 
   // Método para extraer datos de la respuesta (código existente)
   private extractResultadosData(response: any): any {
-    console.log('🔍 Analizando estructura de respuesta:', response);
+
     
     if (response?.ok && response?.data && Array.isArray(response.data) && response.data.length > 0) {
       const firstDataItem = response.data[0];
       if (firstDataItem?.resultadosPorFactor && Array.isArray(firstDataItem.resultadosPorFactor)) {
-        console.log('📍 Datos encontrados en response.data[0] - Estructura confirmada');
+
         return firstDataItem;
       }
     }
@@ -382,22 +382,22 @@ private ensureUserCharacterizationNotCompleted() {
     if (response?.data && Array.isArray(response.data) && response.data.length > 0) {
       const firstDataItem = response.data[0];
       if (firstDataItem?.resultadosPorFactor) {
-        console.log('📍 Datos encontrados en response.data[0]');
+
         return firstDataItem;
       }
     }
     
     if (response?.resultadosPorFactor) {
-      console.log('📍 Datos encontrados directamente en response');
+
       return response;
     }
     
     if (response?.data?.resultadosPorFactor) {
-      console.log('📍 Datos encontrados en response.data');
+
       return response.data;
     }
     
-    console.log('❌ No se encontraron resultadosPorFactor en ninguna estructura');
+
     return null;
   }
 
@@ -406,7 +406,7 @@ private ensureUserCharacterizationNotCompleted() {
     const factorsFlow = this.progressFlows.get('factors');
     if (!factorsFlow) return;
 
-    console.log('🔄 Actualizando factores con datos del backend:', backendData);
+
 
     const factorNameToStepId: { [key: string]: string } = {
       'GE': 'factor1',
@@ -431,10 +431,10 @@ private ensureUserCharacterizationNotCompleted() {
     };
 
     if (backendData.resultadosPorFactor && Array.isArray(backendData.resultadosPorFactor)) {
-      console.log('📊 Procesando factores completados:', backendData.resultadosPorFactor);
+
       
       backendData.resultadosPorFactor.forEach((factor: any) => {
-        console.log('🔄 Procesando factor completado:', factor);
+
         
         const factorName = factor.nombreFactor?.trim();
         let stepId = factorNameToStepId[factorName];
@@ -448,9 +448,9 @@ private ensureUserCharacterizationNotCompleted() {
         if (factorStep) {
           factorStep.completionPercentage = 100;
           factorStep.isCompleted = true;
-          console.log(`✅ Factor ${stepId}: COMPLETADO (100%) - Calificación: ${factor.porcentajeFactor.toFixed(1)}%`);
+
         } else {
-          console.warn(`❌ No se encontró step para factor: ID=${factor.idFactor}, Nombre="${factorName}"`);
+
         }
       });
     }
@@ -458,7 +458,7 @@ private ensureUserCharacterizationNotCompleted() {
 
   // Desbloquear factores secuencialmente (código existente)
   private unlockFactorsSequentially(flow: ProgressFlow) {
-    console.log('🔓 Desbloqueando factores secuencialmente...');
+
     
     for (let i = 0; i < flow.steps.length; i++) {
       const currentStep = flow.steps[i];
@@ -466,19 +466,19 @@ private ensureUserCharacterizationNotCompleted() {
       if (i === 0) {
         // El primer factor se desbloquea solo si las caracterizaciones están completas
         // (ya se manejó en applyUnlockLogic)
-        console.log(`${currentStep.isUnlocked ? '✅' : '🔒'} ${currentStep.id}: ${currentStep.isUnlocked ? 'Desbloqueado' : 'Esperando caracterizaciones'}`);
+
       } else {
         // Los siguientes factores se desbloquean si el anterior está completado
         const previousStep = flow.steps[i - 1];
         currentStep.isUnlocked = previousStep.isCompleted;
         
-        console.log(`${currentStep.isUnlocked ? '🔓' : '🔒'} ${currentStep.id}: ${currentStep.isUnlocked ? 'Desbloqueado' : 'Bloqueado'} (${previousStep.id} completado: ${previousStep.isCompleted})`);
+
       }
     }
     
     const unlockedCount = flow.steps.filter(s => s.isUnlocked).length;
     const completedCount = flow.steps.filter(s => s.isCompleted).length;
-    console.log(`📊 Factores - Estado final: ${completedCount} completados, ${unlockedCount} desbloqueados de ${flow.steps.length} total`);
+
   }
 
   // Marcar un paso como completado y aplicar lógica de desbloqueo
@@ -489,7 +489,7 @@ private ensureUserCharacterizationNotCompleted() {
     const step = flow.steps.find(s => s.id === stepId);
     if (!step) return;
 
-    console.log(`🎯 Completando step ${stepId} al ${completionPercentage}%`);
+
 
     step.isCompleted = completionPercentage >= 100;
     step.completionPercentage = completionPercentage;
@@ -503,10 +503,10 @@ private ensureUserCharacterizationNotCompleted() {
     const configFlow = this.progressFlows.get('configuration');
     const factorsFlow = this.progressFlows.get('factors');
 
-    console.log('🐛 DEBUG - Estado actual completo:');
+
     
     if (configFlow) {
-      console.log('📋 CONFIGURACIÓN:');
+
       configFlow.steps.forEach((step, index) => {
         console.log(`${index + 1}. ${step.id} (${step.name}):`, {
           isUnlocked: step.isUnlocked,
@@ -517,7 +517,7 @@ private ensureUserCharacterizationNotCompleted() {
     }
 
     if (factorsFlow) {
-      console.log('📋 FACTORES:');
+
       factorsFlow.steps.forEach((step, index) => {
         console.log(`${index + 1}. ${step.id} (${step.name}):`, {
           isUnlocked: step.isUnlocked,
@@ -569,7 +569,7 @@ private ensureUserCharacterizationNotCompleted() {
         this.progressSubject.next(this.progressFlows);
       }
     } catch (error) {
-      console.warn('Error al cargar progreso desde storage:', error);
+
     }
   }
 }

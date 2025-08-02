@@ -108,7 +108,7 @@ export class SublevelMenuComponent implements OnInit {
     if (item.isLocked) {
       event.preventDefault();
       event.stopPropagation();
-      console.log(`${item.label} está bloqueado. Complete el factor anterior primero.`);
+
       return false;
     }
     return true;

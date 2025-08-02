@@ -55,7 +55,7 @@ export class AuthService {
       const currentTime = Math.floor(Date.now() / 1000);
       return decodedToken.exp !== undefined && decodedToken.exp < currentTime;
     } catch (error) {
-      console.error('Error al decodificar el token:', error);
+
       return true;
     }
   }

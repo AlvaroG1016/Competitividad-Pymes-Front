@@ -52,7 +52,7 @@ export class CommonsLibService {
         if (res.Ok === false && res.Error?.length && res.ValidationErrors?.length == 0) {
           onError?.(res.Error);
         } else if (res.Ok === false && res.ValidationErrors?.length > 0) {
-          console.warn('Errores de validación:', res.ValidationErrors);
+
           onValidationError?.(res.ValidationErrors);
         } else {
           onSuccess(res);
@@ -62,7 +62,7 @@ export class CommonsLibService {
         this.hideSpinner(); // ← Ocultar spinner
         
         const failure = err.error;
-        console.error('Error en la petición:', err);
+
         
         if (err.error?.ValidationErrors?.length) {
           onValidationError?.([`${failure.Error ? failure.Error : err.error.ValidationErrors}`]);
@@ -96,7 +96,7 @@ export class CommonsLibService {
         if (res.Ok === false && res.Error?.length && res.ValidationErrors?.length == 0) {
           onError?.(res.Error);
         } else if (res.Ok === false && res.ValidationErrors?.length) {
-          console.warn('Errores de validación:', res.ValidationErrors);
+
           onValidationError?.(res.ValidationErrors);
         } else {
           onSuccess(res);
@@ -105,7 +105,7 @@ export class CommonsLibService {
       error: (err) => {
         this.hideSpinner(); // ← Ocultar spinner
         
-        console.error('Error en la petición:', err);
+
         if (err.error?.ValidationErrors?.length) {
           onValidationError?.([`Error del servidor: ${err.error.ValidationErrors}`]);
         } else if (err.error?.Error?.length) {
@@ -136,7 +136,7 @@ export class CommonsLibService {
         if (res.Ok === false && res.Error?.length && res.ValidationErrors?.length == 0) {
           onError?.(res.Error);
         } else if (res.Ok === false && res.ValidationErrors?.length) {
-          console.warn('Errores de validación:', res.ValidationErrors);
+
           onValidationError?.(res.ValidationErrors);
         } else {
           onSuccess(res);
@@ -145,7 +145,7 @@ export class CommonsLibService {
       error: (err) => {
         this.hideSpinner(); // ← Ocultar spinner
         
-        console.error('Error en la petición:', err);
+
         if (err.error?.ValidationErrors?.length) {
           onValidationError?.([`Error del servidor: ${err.error.ValidationErrors}`]);
         } else if (err.error?.Error?.length) {
@@ -170,7 +170,7 @@ export class CommonsLibService {
       if (res.Ok === false && res.Error?.length && res.ValidationErrors?.length == 0) {
         onError?.(res.Error);
       } else if (res.Ok === false && res.ValidationErrors?.length) {
-        console.warn('Errores de validación:', res.ValidationErrors);
+
         onValidationError?.(res.ValidationErrors);
       } else {
         onSuccess(res);
@@ -179,7 +179,7 @@ export class CommonsLibService {
     error: (err) => {
       this.hideSpinner(); // ← Ocultar spinner
       
-      console.error('Error en la petición:', err);
+
       if (err.error?.ValidationErrors?.length) {
         onValidationError?.([`Error del servidor: ${err.error.ValidationErrors}`]);
       } else if (err.error?.Error?.length) {
@@ -249,7 +249,7 @@ export class CommonsLibService {
 
   descargarArchivo(data: any): void {
     if (!data || !data.FileContent || !data.FileName) {
-      console.error('Datos del archivo no válidos:', data);
+
       alert('Ocurrió un error al descargar el archivo.');
       return;
     }
@@ -357,7 +357,7 @@ export class CommonsLibService {
   // Resto de métodos sin cambios (copio solo algunos importantes)
   private handleError(error: any): void {
     if (error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.message);
+
     } else {
       console.error(
         `Backend returned code ${error.status}, ` + `body was: ${error.error}`

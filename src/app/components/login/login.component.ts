@@ -182,7 +182,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private handleLoginErrors(errorMessage: any): void {
     if (!errorMessage || typeof errorMessage !== 'string') {
-      console.error('Error inesperado:', errorMessage);
+
       return;
     }
 

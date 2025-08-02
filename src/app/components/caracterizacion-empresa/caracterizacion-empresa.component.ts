@@ -41,21 +41,21 @@ export class CaracterizacionEmpresaComponent implements OnInit {
   private async loadExistingData(): Promise<void> {
     try {
       this.isLoading = true;
-      console.log('🔄 Cargando datos de caracterización existente...');
+
       
       await this.validateCaracterizacionEmpresa();
       
       if (this.esCaracterizado && this.dataCaracterizacion) {
         this.loadDataToForm();
-        console.log('✅ Datos cargados al formulario');
+
       } else {
-        console.log('📝 No hay caracterización previa, formulario en blanco');
+
       }
       
       this.isLoading = false;
       
     } catch (error) {
-      console.error('💥 Error al cargar datos existentes:', error);
+
       this.isLoading = false;
     }
   }
@@ -63,7 +63,7 @@ export class CaracterizacionEmpresaComponent implements OnInit {
   private loadDataToForm(): void {
     if (!this.dataCaracterizacion) return;
 
-    console.log('📋 Cargando datos al formulario:', this.dataCaracterizacion);
+
 
     this.surveyForm.patchValue({
       name: this.dataCaracterizacion.nombreEmpresa || '',
@@ -76,7 +76,7 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     });
 
     this.surveyForm.markAsPristine();
-    console.log('✅ Formulario cargado con datos existentes');
+
   }
 
   private initializeForm(): void {
@@ -129,34 +129,34 @@ export class CaracterizacionEmpresaComponent implements OnInit {
       this.commonsService.getWithHandling(
         'CaracterizacionEmpresa/GetCaracterizacionEmpresaByIdEmpresa',
         (response: any) => {
-          console.log('📥 Respuesta de validación:', response);
+
           
           if (response?.ok && response?.data && response.data.length > 0) {
             const data = response.data[0];
             this.esCaracterizado = data.caracterizado || false;
             this.dataCaracterizacion = data;
             
-            console.log(`✅ Caracterización ${this.esCaracterizado ? 'EXISTE' : 'NO EXISTE'}`);
+
             
             if (this.esCaracterizado) {
-              console.log('📋 Datos encontrados:', this.dataCaracterizacion);
+
             }
           } else {
             this.esCaracterizado = false;
             this.dataCaracterizacion = null;
-            console.log('⚠️ Respuesta sin datos válidos');
+
           }
           
           resolve();
         },
         (validationErrors) => {
-          console.warn('⚠️ Errores de validación al consultar caracterización:', validationErrors);
+
           this.esCaracterizado = false;
           this.dataCaracterizacion = null;
           resolve();
         },
         (errors) => {
-          console.error('💥 Error al consultar caracterización:', errors);
+
           this.esCaracterizado = false;
           this.dataCaracterizacion = null;
           resolve();
@@ -270,25 +270,25 @@ export class CaracterizacionEmpresaComponent implements OnInit {
 
     try {
       var data = this.prepareFormData();
-      console.log('📤 Enviando datos:', data);
+
       
       if (this.esCaracterizado) {
-        console.log('🔄 Actualizando caracterización existente...');
+
       } else {
-        console.log('➕ Creando nueva caracterización...');
+
         await this.createCaracterizacion(data);
       }
 
       this.showSuccessMessage();
       
       // SOLO AGREGAR ESTAS DOS LÍNEAS:
-      console.log('🔄 Actualizando progreso del menú...');
+
       this.progressService.completeStep('configuration', 'company-characterization', 100);
       
       await this.loadExistingData();
       
     } catch (error) {
-      console.error('Error al enviar el formulario:', error);
+
       this.showErrorMessage();
     } finally {
       this.isSubmitting = false;
@@ -301,16 +301,16 @@ export class CaracterizacionEmpresaComponent implements OnInit {
         'CaracterizacionEmpresa/CrearCaracterizacionEmpresa',
         data,
         (response: any) => {
-          console.log('✅ Caracterización creada exitosamente');
+
           resolve(response);
         },
         (validationErrors) => {
-          console.error('❌ Errores de validación:', validationErrors);
+
           this.showErrorMessage();
           reject(validationErrors);
         },
         (errors) => {
-          console.error('💥 Error al crear:', errors);
+
           this.showErrorMessage();
           reject(errors);
         }
@@ -396,7 +396,7 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     const field = this.surveyForm.get(fieldName);
 
     if (field && field.valid && field.touched) {
-      console.log(`Campo ${fieldName} válido:`, field.value);
+
     }
   }
 
