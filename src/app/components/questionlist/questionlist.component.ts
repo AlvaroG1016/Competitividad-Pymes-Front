@@ -27,7 +27,7 @@ export class QuestionlistComponent implements OnInit {
   currentFactorId: string = '';
   currentRoute: string = '';
   currentFactorIdBD: number = 0; // ID del factor en la BD
-  encuestaId: number = 5; // ID de la encuesta actual
+  encuestaId: number 
   
   // Estados de carga
   isLoadingResponses = false;
@@ -40,17 +40,32 @@ export class QuestionlistComponent implements OnInit {
     private progressService: ProgressLockService
   ) {}
   
-  ngOnInit() {
-    // Obtener la ruta actual para determinar qué factor se está completando
-    this.currentRoute = this.route.snapshot.routeConfig?.path || '';
-    this.currentFactorId = this.getFactorIdFromRoute(this.currentRoute);
-    this.currentFactorIdBD = this.getFactorIdBD(this.currentRoute);
-    
-
-    
-    // Cargar respuestas existentes para este factor
-    this.loadExistingResponses();
-  }
+ngOnInit() {
+  this.service.getWithHandling(
+    `CaracterizacionUsuario/GetIdEncuenstaByEmpresa`,
+    (response: any) => {
+      debugger;
+      localStorage.setItem('encuestaId', response.data[0].idEncuesta);
+      this.encuestaId = response.data[0].idEncuesta;
+      
+      // Obtener la ruta actual para determinar qué factor se está completando
+      this.currentRoute = this.route.snapshot.routeConfig?.path || '';
+      this.currentFactorId = this.getFactorIdFromRoute(this.currentRoute);
+      this.currentFactorIdBD = this.getFactorIdBD(this.currentRoute);
+      
+      // Cargar respuestas existentes DESPUÉS de obtener el encuestaId
+      this.loadExistingResponses();
+    },
+    (validationErrors) => {
+      this.isLoadingResponses = false;
+      this.responsesLoaded = true;
+    },
+    (errors) => {
+      this.isLoadingResponses = false;
+      this.responsesLoaded = true;
+    }
+  );
+}
   
   pasoActual = 0;
   respuestas: { [key: string]: string } = {};

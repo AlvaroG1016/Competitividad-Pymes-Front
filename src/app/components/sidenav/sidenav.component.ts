@@ -97,8 +97,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.progressService.loadProgressFromStorage();
       
       // Cargar progreso completo (caracterizaciones + factores)
-      const userId = this.getCurrentUserId(); // Implementar según tu sistema de autenticación
-      this.progressService.loadProgressFromBackend(userId);
+      
+      this.progressService.loadProgressFromBackend();
     }, 100);
   }
 

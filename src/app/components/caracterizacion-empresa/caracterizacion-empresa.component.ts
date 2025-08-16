@@ -281,7 +281,6 @@ export class CaracterizacionEmpresaComponent implements OnInit {
 
       this.showSuccessMessage();
       
-      // SOLO AGREGAR ESTAS DOS LÍNEAS:
 
       this.progressService.completeStep('configuration', 'company-characterization', 100);
       

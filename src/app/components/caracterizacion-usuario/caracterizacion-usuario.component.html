@@ -153,6 +153,33 @@
               </span>
             </small>
           </div>
+          <div class="form-field"
+               [ngClass]="{'ng-invalid': surveyForm.get('personalEmail')?.invalid && surveyForm.get('personalEmail')?.touched,
+                          'ng-valid': surveyForm.get('personalEmail')?.valid && surveyForm.get('personalEmail')?.touched}">
+            <label for="personalEmail">
+              <i class="pi pi-envelope" style="margin-right: 0.5rem; color: var(--primary-color);"></i>
+              Correo Personal
+            </label>
+            <input 
+              id="personalEmail" 
+              type="email" 
+              pInputText 
+              formControlName="personalEmail" 
+              placeholder="nombre@empresa.com"
+              autocomplete="work email"
+            />
+            <small 
+              *ngIf="surveyForm.get('personalEmail')?.invalid && surveyForm.get('personalEmail')?.touched" 
+              class="error-text">
+              <i class="pi pi-exclamation-triangle" style="margin-right: 0.25rem;"></i>
+              <span *ngIf="surveyForm.get('personalEmail')?.errors?.['required']">
+                El correo personal es requerido
+              </span>
+              <span *ngIf="surveyForm.get('personalEmail')?.errors?.['email']">
+                Ingrese un correo electrónico válido
+              </span>
+            </small>
+          </div>
         </div>
       </div>
 

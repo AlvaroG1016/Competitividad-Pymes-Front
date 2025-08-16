@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonsLibService } from '../../services/commons-lib.service';
+import { ProgressLockService } from '../../services/progress-lock.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-caracterizacion-usuario',
   standalone: false,
   templateUrl: './caracterizacion-usuario.component.html',
-  styleUrl: './caracterizacion-usuario.component.css'
+  styleUrl: './caracterizacion-usuario.component.css',
 })
 export class CaracterizacionUsuarioComponent implements OnInit {
   surveyForm: FormGroup;
@@ -17,10 +20,15 @@ export class CaracterizacionUsuarioComponent implements OnInit {
     { label: 'Masculino', value: 'male' },
     { label: 'Femenino', value: 'female' },
     { label: 'Otro', value: 'other' },
-    { label: 'Prefiero no especificar', value: 'not_specified' }
+    { label: 'Prefiero no especificar', value: 'not_specified' },
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private commonService: CommonsLibService,
+    private progressService: ProgressLockService,
+    private readonly dialog: MatDialog,
+  ) {}
 
   ngOnInit() {
     this.initializeForm();
@@ -28,31 +36,41 @@ export class CaracterizacionUsuarioComponent implements OnInit {
 
   private initializeForm(): void {
     this.surveyForm = this.fb.group({
-      name: ['', [
-        Validators.required, 
-        Validators.minLength(3),
-        Validators.pattern(/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/) // Solo letras y espacios
-      ]],
-      age: ['', [
-        Validators.required, 
-        Validators.min(18), 
-        Validators.max(100)
-      ]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/), // Solo letras y espacios
+        ],
+      ],
+      age: ['', [Validators.required, Validators.min(18), Validators.max(100)]],
       gender: ['', Validators.required],
-      position: ['', [
-        Validators.required,
-        Validators.minLength(2)
-      ]],
-      seniority: ['', [
-        Validators.required, 
-        Validators.min(0),
-        Validators.max(50)
-      ]],
-      institutionalEmail: ['', [
-        Validators.required, 
-        Validators.email,
-        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-      ]]
+      position: ['', [Validators.required, Validators.minLength(2)]],
+      seniority: [
+        '',
+        [Validators.required, Validators.min(0), Validators.max(50)],
+      ],
+      institutionalEmail: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.pattern(
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+          ),
+        ],
+      ],
+      personalEmail: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.pattern(
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+          ),
+        ],
+      ],
     });
 
     // Suscribirse a cambios del formulario para validaciones en tiempo real
@@ -74,7 +92,7 @@ export class CaracterizacionUsuarioComponent implements OnInit {
     // Si el formulario es válido, mostrar mensaje temporal
     if (this.surveyForm.valid) {
       this.showSuccessIndicator = true;
-      
+
       // Ocultar el mensaje después de 3 segundos
       this.successTimeout = setTimeout(() => {
         this.showSuccessIndicator = false;
@@ -86,7 +104,7 @@ export class CaracterizacionUsuarioComponent implements OnInit {
 
   private validateForm(): void {
     // Validaciones personalizadas adicionales si es necesario
-    Object.keys(this.surveyForm.controls).forEach(key => {
+    Object.keys(this.surveyForm.controls).forEach((key) => {
       const control = this.surveyForm.get(key);
       if (control && control.invalid && control.touched) {
         control.markAsTouched();
@@ -102,9 +120,14 @@ export class CaracterizacionUsuarioComponent implements OnInit {
     const totalFields = Object.keys(this.surveyForm.controls).length;
     let validFields = 0;
 
-    Object.keys(this.surveyForm.controls).forEach(key => {
+    Object.keys(this.surveyForm.controls).forEach((key) => {
       const control = this.surveyForm.get(key);
-      if (control && control.valid && control.value && control.value.toString().trim() !== '') {
+      if (
+        control &&
+        control.valid &&
+        control.value &&
+        control.value.toString().trim() !== ''
+      ) {
         validFields++;
       }
     });
@@ -134,47 +157,53 @@ export class CaracterizacionUsuarioComponent implements OnInit {
     }
 
     const errors = field.errors;
-    
+
     switch (fieldName) {
       case 'name':
         if (errors['required']) return 'El nombre es requerido';
-        if (errors['minlength']) return 'El nombre debe tener al menos 3 caracteres';
-        if (errors['pattern']) return 'El nombre solo puede contener letras y espacios';
+        if (errors['minlength'])
+          return 'El nombre debe tener al menos 3 caracteres';
+        if (errors['pattern'])
+          return 'El nombre solo puede contener letras y espacios';
         break;
-      
+
       case 'age':
         if (errors['required']) return 'La edad es requerida';
         if (errors['min']) return 'La edad mínima es 18 años';
         if (errors['max']) return 'La edad máxima es 100 años';
         break;
-      
+
       case 'gender':
         if (errors['required']) return 'Debe seleccionar un género';
         break;
-      
+
       case 'position':
         if (errors['required']) return 'El cargo es requerido';
-        if (errors['minlength']) return 'El cargo debe tener al menos 2 caracteres';
+        if (errors['minlength'])
+          return 'El cargo debe tener al menos 2 caracteres';
         break;
-      
+
       case 'seniority':
         if (errors['required']) return 'El tiempo de antigüedad es requerido';
         if (errors['min']) return 'La antigüedad no puede ser negativa';
         if (errors['max']) return 'La antigüedad máxima es 50 años';
         break;
-      
+
       case 'institutionalEmail':
         if (errors['required']) return 'El correo institucional es requerido';
-        if (errors['email'] || errors['pattern']) return 'Ingrese un correo electrónico válido';
+        if (errors['email'] || errors['pattern'])
+          return 'Ingrese un correo electrónico válido';
         break;
     }
-    
+
     return 'Campo inválido';
   }
 
   /**
    * Maneja el envío del formulario
    */
+
+  //TODO: Completar los datos si ya fue caracterizado (guiarse con empresa)
   async onSubmit(): Promise<void> {
     if (this.surveyForm.invalid) {
       this.markAllFieldsAsTouched();
@@ -184,30 +213,65 @@ export class CaracterizacionUsuarioComponent implements OnInit {
     this.isSubmitting = true;
 
     try {
-      // Simular procesamiento del formulario
-      await this.processFormSubmission();
-      
+      var data = this.prepareFormData();
 
-      
-      // Aquí puedes agregar la lógica para enviar los datos al servidor
-      // Por ejemplo: await this.userService.submitCharacterization(this.surveyForm.value);
-      
+      await this.createCaracterizacion(data);
+
       this.showSuccessMessage();
-      this.resetForm();
-      
-    } catch (error) {
 
+      this.progressService.completeStep(
+        'configuration',
+        'user-characterization',
+        100
+      );
+
+      //await this.loadExistingData();
+    } catch (error) {
       this.showErrorMessage();
     } finally {
       this.isSubmitting = false;
     }
   }
 
+  private async createCaracterizacion(data: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.commonService.postWithHandling(
+        'CaracterizacionUsuario/CrearCaracterizacionUsuario',
+        data,
+        (response: any) => {
+          resolve(response);
+        },
+        (validationErrors) => {
+          this.showErrorMessage();
+          reject(validationErrors);
+        },
+        (errors) => {
+          this.showErrorMessage();
+          reject(errors);
+        }
+      );
+    });
+  }
+
+  private prepareFormData(): any {
+    const formValue = this.surveyForm.value;
+
+    return {
+      nombre: formValue.name,
+      edad: formValue.age,
+      genero: formValue.gender,
+      cargo: formValue.position,
+      antiguedad: formValue.seniority,
+      emailInstitucional: formValue.institutionalEmail,
+      EmailPersonal: formValue.personalEmail,
+    };
+  }
+
   /**
    * Marca todos los campos como tocados para mostrar errores
    */
   private markAllFieldsAsTouched(): void {
-    Object.keys(this.surveyForm.controls).forEach(key => {
+    Object.keys(this.surveyForm.controls).forEach((key) => {
       const control = this.surveyForm.get(key);
       if (control) {
         control.markAsTouched();
@@ -229,15 +293,19 @@ export class CaracterizacionUsuarioComponent implements OnInit {
   /**
    * Muestra mensaje de éxito (puedes implementar con toast, modal, etc.)
    */
-  private showSuccessMessage(): void {
-    // Implementar notificación de éxito
-
-    // Ejemplo con PrimeNG Toast:
-    // this.messageService.add({
-    //   severity: 'success', 
-    //   summary: 'Éxito', 
-    //   detail: 'Caracterización enviada correctamente'
-    // });
+private showSuccessMessage(): void {
+    const mensaje = 
+      'Caracterización creada exitosamente';
+      
+    this.commonService.openResultModal(
+      this.dialog,
+      true,
+      null,
+      null,
+      true,
+      false,
+      mensaje
+    );
   }
 
   /**
@@ -245,11 +313,10 @@ export class CaracterizacionUsuarioComponent implements OnInit {
    */
   private showErrorMessage(): void {
     // Implementar notificación de error
-
     // Ejemplo con PrimeNG Toast:
     // this.messageService.add({
-    //   severity: 'error', 
-    //   summary: 'Error', 
+    //   severity: 'error',
+    //   summary: 'Error',
     //   detail: 'Error al enviar la caracterización. Intente nuevamente.'
     // });
   }
@@ -260,14 +327,14 @@ export class CaracterizacionUsuarioComponent implements OnInit {
   private resetForm(): void {
     this.surveyForm.reset();
     this.showSuccessIndicator = false;
-    
+
     // Limpiar timeout si existe
     if (this.successTimeout) {
       clearTimeout(this.successTimeout);
     }
-    
+
     // Marcar todos los campos como no tocados
-    Object.keys(this.surveyForm.controls).forEach(key => {
+    Object.keys(this.surveyForm.controls).forEach((key) => {
       const control = this.surveyForm.get(key);
       if (control) {
         control.markAsUntouched();
@@ -290,11 +357,11 @@ export class CaracterizacionUsuarioComponent implements OnInit {
     if (this.isSubmitting) {
       return 'Enviando...';
     }
-    
+
     if (this.surveyForm.valid) {
       return 'Enviar Encuesta';
     }
-    
+
     return `Complete todos los campos (${this.getFormProgress()}%)`;
   }
 
@@ -303,10 +370,9 @@ export class CaracterizacionUsuarioComponent implements OnInit {
    */
   onFieldChange(fieldName: string): void {
     const field = this.surveyForm.get(fieldName);
-    
+
     if (field && field.valid && field.touched) {
       // Implementar lógica adicional si es necesario
-
     }
   }
 
