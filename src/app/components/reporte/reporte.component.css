@@ -1,0 +1,135 @@
+/* reporte.component.css */
+.reporte-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 40px;
+  font-size: 2.2em;
+  font-weight: 600;
+}
+
+/* Gráficos */
+.graficos-section {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 40px;
+  background: white;
+  padding: 40px 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.grafico-item {
+  text-align: center;
+}
+
+.circulo-chart svg {
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+.porcentaje-text {
+  font-size: 24px;
+  font-weight: bold;
+  fill: #2c3e50;
+}
+
+.label-text {
+  font-size: 14px;
+  fill: #6c757d;
+  font-weight: 500;
+}
+
+/* Estado */
+.estado-card {
+  text-align: center;
+  padding: 30px;
+  border-radius: 15px;
+  color: white;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.estado-card h2 {
+  margin: 0 0 15px 0;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.estado-card p {
+  margin: 0;
+  font-size: 1.1em;
+  line-height: 1.5;
+}
+
+/* Métricas */
+.metricas-card {
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.metrica {
+  text-align: center;
+}
+
+.metrica .numero {
+  display: block;
+  font-size: 2.5em;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.metrica .descripcion {
+  font-size: 0.9em;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reporte-container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  .graficos-section {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .circulo-chart svg {
+    width: 160px;
+    height: 160px;
+  }
+
+  .porcentaje-text {
+    font-size: 20px;
+  }
+
+  .metricas-card {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .estado-card h2 {
+    font-size: 1.5em;
+  }
+
+  .estado-card p {
+    font-size: 1em;
+  }
+}

@@ -1,0 +1,101 @@
+<!-- grafico-factores.component.html -->
+<div class="graficos-container">
+  
+  <div class="header">
+    <h1>Análisis Detallado por Factores</h1>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando análisis...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ error }}
+    <button (click)="reintentar()" class="retry-btn">Reintentar</button>
+  </div>
+
+  <!-- Contenido principal -->
+  <div *ngIf="!cargando && !error && resultadosEncuesta" class="contenido">
+    
+    <!-- Resumen general -->
+    <div class="resumen-card">
+      <div class="resumen-item">
+        <span class="numero">{{ (resultadosEncuesta.puntajeFinalTotal || 0).toFixed(1) }}%</span>
+        <span class="descripcion">Puntaje Total</span>
+      </div>
+      <div class="resumen-item">
+        <span class="numero">{{ resultadosEncuesta.totalFactores || 0 }}</span>
+        <span class="descripcion">Factores Evaluados</span>
+      </div>
+      <div class="resumen-item">
+        <span class="numero">{{ resultadosEncuesta.totalVariables || 0 }}</span>
+        <span class="descripcion">Variables Analizadas</span>
+      </div>
+    </div>
+
+    <!-- Gráfico de Factores -->
+    <div class="chart-card">
+      <div class="chart-container">
+        <canvas #chartFactores></canvas>
+      </div>
+    </div>
+
+    <!-- Selector de Factor y Gráfico de Variables -->
+    <div class="chart-card">
+      <div class="selector-factor">
+        <label for="factorSelect">Seleccionar Factor para Ver Variables:</label>
+        <select 
+          id="factorSelect" 
+          [value]="factorSeleccionado" 
+          (change)="onFactorChange($event)"
+          class="form-select">
+          <option *ngFor="let factor of factoresList" [value]="factor.idFactor">
+            {{ limpiarNombreFactor(factor.nombreFactor) }} - {{ factor.porcentajeFactor.toFixed(1) }}%
+          </option>
+        </select>
+      </div>
+      
+      <div class="chart-container">
+        <canvas #chartVariables></canvas>
+      </div>
+    </div>
+
+    <!-- Tabla de detalles del factor seleccionado -->
+    <div class="tabla-card" *ngIf="factorSeleccionado">
+      <h3>Detalle de Variables</h3>
+      <div class="tabla-container">
+        <table class="tabla-variables">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Puntaje Obtenido</th>
+              <th>Puntaje Máximo</th>
+              <th>Porcentaje</th>
+              <th>Peso</th>
+              <th>Contribución</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let variable of obtenerVariablesDelFactor()">
+              <td class="variable-nombre">{{ variable.nombreVariable }}</td>
+              <td>{{ variable.puntajeObtenido.toFixed(2) }}</td>
+              <td>{{ variable.puntajeMaximo.toFixed(2) }}</td>
+              <td>
+                <span class="porcentaje-badge" [ngClass]="obtenerClasePorcentaje(variable.porcentajeVariable)">
+                  {{ variable.porcentajeVariable.toFixed(1) }}%
+                </span>
+              </td>
+              <td>{{ variable.pesoVariable.toFixed(2) }}%</td>
+              <td>{{ variable.contribucionFinal.toFixed(2) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

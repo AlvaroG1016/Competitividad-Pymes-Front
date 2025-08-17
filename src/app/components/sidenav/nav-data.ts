@@ -43,5 +43,11 @@ export const navbarData: INavbarData[] = [
     icon: 'pi pi-chart-line',
     label: 'Evaluación de Competitividad',
     items: [] // Se llenará dinámicamente con los factores
+  },
+  {
+    routeLink: 'reporte',
+    icon: 'pi pi-chart-line',
+    label: 'repo',
+    
   }
 ];

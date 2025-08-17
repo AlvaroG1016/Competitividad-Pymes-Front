@@ -1,0 +1,276 @@
+/* grafico-factores.component.css */
+.graficos-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  color: #2c3e50;
+  font-size: 2.2em;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading p {
+  color: #6c757d;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Error */
+.error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #f5c6cb;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.retry-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: auto;
+}
+
+.retry-btn:hover {
+  background: #c82333;
+}
+
+/* Cards */
+.chart-card, .tabla-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+  padding: 25px;
+}
+
+.resumen-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  margin-bottom: 25px;
+  padding: 25px;
+  display: flex;
+  justify-content: space-around;
+  color: white;
+}
+
+.resumen-item {
+  text-align: center;
+}
+
+.resumen-item .numero {
+  display: block;
+  font-size: 2.5em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.resumen-item .descripcion {
+  font-size: 0.9em;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Chart container */
+.chart-container {
+  position: relative;
+  height: 400px;
+  margin-top: 20px;
+}
+
+/* Selector de factor */
+.selector-factor {
+  margin-bottom: 20px;
+}
+
+.selector-factor label {
+  display: block;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.form-select {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Tabla */
+.tabla-card h3 {
+  color: #2c3e50;
+  margin: 0 0 20px 0;
+  font-size: 1.4em;
+  font-weight: 600;
+}
+
+.tabla-container {
+  overflow-x: auto;
+}
+
+.tabla-variables {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-variables th {
+  background: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.tabla-variables td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.tabla-variables tr:hover {
+  background-color: #f8f9fa;
+}
+
+.variable-nombre {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.porcentaje-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+}
+
+.porcentaje-excelente {
+  background-color: #28a745;
+}
+
+.porcentaje-bueno {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.porcentaje-regular {
+  background-color: #fd7e14;
+}
+
+.porcentaje-malo {
+  background-color: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .graficos-container {
+    padding: 20px;
+  }
+
+  .header h1 {
+    font-size: 1.8em;
+  }
+
+  .resumen-card {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+
+  .tabla-variables {
+    font-size: 12px;
+  }
+
+  .tabla-variables th,
+  .tabla-variables td {
+    padding: 8px 4px;
+  }
+
+  .error {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .retry-btn {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-card, .tabla-card, .resumen-card {
+    margin: 0 -10px 20px -10px;
+    border-radius: 12px;
+  }
+
+  .chart-container {
+    height: 250px;
+  }
+}

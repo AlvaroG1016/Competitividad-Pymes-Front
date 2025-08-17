@@ -15,6 +15,8 @@ import { GambientalComponent } from './components/gambiental/gambiental.componen
 import { TecnologiasisComponent } from './components/tecnologiasis/tecnologiasis.component';
 import { authGuard } from './guards/auth.guard';
 import { CaracterizacionEmpresaComponent } from './components/caracterizacion-empresa/caracterizacion-empresa.component';
+import { ReporteComponent } from './components/reporte/reporte.component';
+import { GraficoFactoresComponent } from './components/grafico-factores/grafico-factores.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full' }, 
@@ -32,7 +34,7 @@ const routes: Routes = [
       {path:'grecursoshumanos', component:GrecursoshumanosComponent},
       {path:'gambiental', component:GambientalComponent},
       {path:'tsis', component:TecnologiasisComponent},
-
+      {path:'reporte', component:GraficoFactoresComponent}
     ]
   },
 ];

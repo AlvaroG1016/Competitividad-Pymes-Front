@@ -23,6 +23,7 @@
     "@primeng/themes": "^19.0.9",
     "@tailwindcss/postcss": "^4.0.9",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.5.0",
     "jwt-decode": "^4.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.9",

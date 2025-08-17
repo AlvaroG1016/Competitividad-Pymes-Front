@@ -1,0 +1,92 @@
+<!-- reporte.component.html -->
+<div class="reporte-container">
+  
+  <div class="header">
+    <h1>Reporte de Competitividad</h1>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading">
+    <div class="spinner"></div>
+    <p>Generando reporte...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="error">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ error }}
+    <button (click)="reintentar()" class="retry-btn">Reintentar</button>
+  </div>
+
+  <!-- Contenido principal -->
+  <div *ngIf="!cargando && !error" class="contenido">
+    
+    <!-- Gráficos principales -->
+    <div class="graficos-section">
+      
+      <!-- Su empresa -->
+      <div class="grafico-item">
+        <div class="circulo-chart">
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="80" stroke="#e9ecef" stroke-width="15" fill="none"></circle>
+            <circle 
+              cx="100" cy="100" r="80" 
+              [attr.stroke]="obtenerColor()" 
+              stroke-width="15" 
+              fill="none"
+              stroke-linecap="round"
+              [attr.stroke-dasharray]="502"
+              [attr.stroke-dashoffset]="502 - (502 * (puntajeEmpresa || 0) / 100)"
+              transform="rotate(-90 100 100)">
+            </circle>
+            <text x="100" y="95" text-anchor="middle" class="porcentaje-text">{{ (puntajeEmpresa || 0).toFixed(1) }}%</text>
+            <text x="100" y="115" text-anchor="middle" class="label-text">Su Empresa</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Media del sistema -->
+      <div class="grafico-item">
+        <div class="circulo-chart">
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="80" stroke="#e9ecef" stroke-width="15" fill="none"></circle>
+            <circle 
+              cx="100" cy="100" r="80" 
+              stroke="#6c757d" 
+              stroke-width="15" 
+              fill="none"
+              stroke-linecap="round"
+              [attr.stroke-dasharray]="502"
+              [attr.stroke-dashoffset]="502 - (502 * (mediaSistema || 0) / 100)"
+              transform="rotate(-90 100 100)">
+            </circle>
+            <text x="100" y="95" text-anchor="middle" class="porcentaje-text">{{ (mediaSistema || 0).toFixed(1) }}%</text>
+            <text x="100" y="115" text-anchor="middle" class="label-text">Media del Sistema</text>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Estado -->
+    <div class="estado-card" [style.background-color]="obtenerColor()">
+      <h2>{{ obtenerEstado() }}</h2>
+      <p>{{ obtenerMensaje() }}</p>
+    </div>
+
+    <!-- Métricas -->
+    <div class="metricas-card">
+      <div class="metrica">
+        <span class="numero" [style.color]="(obtenerDiferencia() || 0) >= 0 ? '#28a745' : '#dc3545'">
+          {{ (obtenerDiferencia() || 0) > 0 ? '+' : '' }}{{ (obtenerDiferencia() || 0).toFixed(1) }}
+        </span>
+        <span class="descripcion">Diferencia con la media</span>
+      </div>
+      <div class="metrica">
+        <span class="numero">{{ cantidadEmpresas || 0 }}</span>
+        <span class="descripcion">Empresas comparadas</span>
+      </div>
+    </div>
+
+  </div>
+</div>

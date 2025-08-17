@@ -56,6 +56,8 @@ import { GambientalComponent } from './components/gambiental/gambiental.componen
 import { TecnologiasisComponent } from './components/tecnologiasis/tecnologiasis.component';
 import { customInterceptor } from './services/custom.interceptor';
 import { CaracterizacionEmpresaComponent } from './components/caracterizacion-empresa/caracterizacion-empresa.component';
+import { ReporteComponent } from './components/reporte/reporte.component';
+import { GraficoFactoresComponent } from './components/grafico-factores/grafico-factores.component';
 
 
 
@@ -79,7 +81,9 @@ import { CaracterizacionEmpresaComponent } from './components/caracterizacion-em
     GambientalComponent,
     TecnologiasisComponent,
     ModalNotifyComponent,
-    CaracterizacionEmpresaComponent
+    CaracterizacionEmpresaComponent,
+    ReporteComponent,
+    GraficoFactoresComponent
   ],
   imports: [
     BrowserModule,
