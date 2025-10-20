@@ -34,7 +34,8 @@ const routes: Routes = [
       {path:'grecursoshumanos', component:GrecursoshumanosComponent},
       {path:'gambiental', component:GambientalComponent},
       {path:'tsis', component:TecnologiasisComponent},
-      {path:'reporte', component:GraficoFactoresComponent}
+      {path:'reporte', component:ReporteComponent},
+      {path:'reportedetallado', component:GraficoFactoresComponent}
     ]
   },
 ];

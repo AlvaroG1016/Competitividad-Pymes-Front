@@ -31,13 +31,32 @@ export class ProgressLockService {
   public progress$ = this.progressSubject.asObservable();
 
   constructor(private commonsService: CommonsLibService) {
+    
     this.initializeAllFlows();
   }
 
   // Inicializar todos los flujos de progreso
   private initializeAllFlows() {
+    
+    
     this.initializeConfigurationFlow();
+    
+    
     this.initializeFactorsFlow();
+    
+    
+    this.initializeReportsFlow(); 
+    
+    
+    // Verificar que todos los flujos se crearon
+    const flows = Array.from(this.progressFlows.keys());
+    
+    
+    if (!flows.includes('reports')) {
+      console.error('❌ ERROR: Flujo de reportes no se creó correctamente');
+      // Intentar crear nuevamente
+      this.forceCreateReportsFlow();
+    }
   }
 
   // Inicializar el flujo de configuración (caracterizaciones)
@@ -161,231 +180,282 @@ export class ProgressLockService {
     };
 
     this.progressFlows.set('factors', factorsFlow);
+  }
+
+  // NUEVO: Inicializar el flujo de reportes (BLOQUEADO hasta completar el último factor)
+  private initializeReportsFlow() {
+    
+    
+    const reportsFlow: ProgressFlow = {
+      flowId: 'reports',
+      name: 'Reportes',
+      steps: [
+        {
+          id: 'general-report',
+          name: 'Reporte General',
+          routeLink: 'reporte',
+          icon: 'pi pi-chart-line',
+          isCompleted: false,
+          isUnlocked: false, // BLOQUEADO hasta completar factor8 (Tecnología)
+          
+          requiredSteps: ['factor8'], // Requiere el último factor
+        },
+        {
+          id: 'detailed-reports',
+          name: 'Reportes Detallados',
+          routeLink: 'reportedetallado',
+          icon: 'pi pi-file-pdf',
+          isCompleted: false,
+          isUnlocked: false, // BLOQUEADO hasta completar factor8 (Tecnología)
+          
+          requiredSteps: ['factor8'], // Requiere el último factor
+        },
+      ],
+    };
+
+    this.progressFlows.set('reports', reportsFlow);
+    
+    
+    // Emitir actualización
     this.progressSubject.next(this.progressFlows);
+    
+  }
+
+  // NUEVO: Método para forzar creación del flujo de reportes
+  private forceCreateReportsFlow() {
+    
+    
+    // Eliminar si existe
+    if (this.progressFlows.has('reports')) {
+      this.progressFlows.delete('reports');
+    }
+    
+    // Crear nuevamente
+    this.initializeReportsFlow();
+    
+    // Verificar creación
+    const reportsFlow = this.progressFlows.get('reports');
+    if (reportsFlow) {
+      
+    } else {
+      console.error('❌ FALLO: No se pudo crear el flujo de reportes');
+    }
   }
 
   // Cargar progreso completo desde el backend
-async loadProgressFromBackend() {
-  console.log('🔄 Iniciando carga completa de progreso...');
-  
-  try {
-    // Cargar caracterizaciones CON AWAIT
-    await this.loadCharacterizationsProgress();
-    console.log('✅ Caracterizaciones cargadas');
-
-    // Cargar progreso de factores CON AWAIT
-    await this.loadFactorsProgress();
-    console.log('✅ Factores cargados');
-
-    // Aplicar lógica de desbloqueo UNA SOLA VEZ al final
-    this.applyUnlockLogic();
-    console.log('✅ Lógica de desbloqueo aplicada');
+  async loadProgressFromBackend() {
     
-  } catch (error) {
-    console.error('❌ Error cargando progreso, reseteando a estado inicial:', error);
-    this.resetToInitialState();
-  }
-}
+    
+    try {
+      // Cargar caracterizaciones CON AWAIT
+      await this.loadCharacterizationsProgress();
+      
 
-  // Cargar progreso de caracterizaciones
+      // Cargar progreso de factores CON AWAIT
+      await this.loadFactorsProgress();
+      
+
+      // Aplicar lógica de desbloqueo UNA SOLA VEZ al final
+      this.applyUnlockLogic();
+      
+      
+    } catch (error) {
+      console.error('❌ Error cargando progreso, reseteando a estado inicial:', error);
+      this.resetToInitialState();
+    }
+  }
+
   // Cargar progreso de caracterizaciones CON PROMISES
-private async loadCharacterizationsProgress(): Promise<void> {
-  const promises = [
-    this.loadCompanyCharacterization(),
-    this.loadUserCharacterization()
-  ];
-  
-  await Promise.all(promises);
-}
-
-
-
-// Cargar caracterización de empresa
-private loadCompanyCharacterization(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.commonsService.getWithHandling(
-      'Caracterizacion/VerificarCaracterizacionEmpresa',
-      (response: any) => {
-        console.log('📊 Respuesta caracterización empresa:', response);
-        
-        const configFlow = this.progressFlows.get('configuration');
-        if (configFlow && response?.ok && response?.data && response.data.length > 0) {
-          const caracterizacionData = response.data[0];
-          const companyStep = configFlow.steps.find(s => s.id === 'company-characterization');
-          
-          if (companyStep) {
-            companyStep.isCompleted = caracterizacionData.completed || false;
-            companyStep.completionPercentage = caracterizacionData.percentage || 0;
-            console.log('✅ Empresa actualizada:', {
-              completed: companyStep.isCompleted,
-              percentage: companyStep.completionPercentage
-            });
-          }
-        } else {
-          this.ensureCompanyCharacterizationNotCompleted();
-        }
-        resolve();
-      },
-      (validationErrors) => {
-        console.warn('⚠️ Error validación empresa:', validationErrors);
-        this.ensureCompanyCharacterizationNotCompleted();
-        resolve(); // No rechazar, solo continuar
-      },
-      (errors) => {
-        console.warn('⚠️ Error empresa:', errors);
-        this.ensureCompanyCharacterizationNotCompleted();
-        resolve(); // No rechazar, solo continuar
-      }
-    );
-  });
-}
-
-// Cargar caracterización de usuario
-private loadUserCharacterization(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.commonsService.getWithHandling(
-      'Caracterizacion/VerificarCaracterizacionUsuario',
-      (response: any) => {
-        console.log('👤 Respuesta caracterización usuario:', response);
-        
-        const configFlow = this.progressFlows.get('configuration');
-        if (configFlow && response?.ok && response?.data && response.data.length > 0) {
-          const caracterizacionData = response.data[0];
-          const userStep = configFlow.steps.find(s => s.id === 'user-characterization');
-          
-          if (userStep) {
-            userStep.isCompleted = caracterizacionData.completed || false;
-            userStep.completionPercentage = caracterizacionData.percentage || 0;
-            console.log('✅ Usuario actualizado:', {
-              completed: userStep.isCompleted,
-              percentage: userStep.completionPercentage
-            });
-          }
-        } else {
-          this.ensureUserCharacterizationNotCompleted();
-        }
-        resolve();
-      },
-      (validationErrors) => {
-        console.warn('⚠️ Error validación usuario:', validationErrors);
-        this.ensureUserCharacterizationNotCompleted();
-        resolve(); // No rechazar, solo continuar
-      },
-      (errors) => {
-        console.warn('⚠️ Error usuario:', errors);
-        this.ensureUserCharacterizationNotCompleted();
-        resolve(); // No rechazar, solo continuar
-      }
-    );
-  });
-}
-
-  // Métodos auxiliares para asegurar estados no completados
-// IMPORTANTE: Quitar las llamadas a applyUnlockLogic() de los métodos auxiliares
-private ensureCompanyCharacterizationNotCompleted() {
-  const configFlow = this.progressFlows.get('configuration');
-  if (configFlow) {
-    const companyStep = configFlow.steps.find(s => s.id === 'company-characterization');
-    if (companyStep) {
-      companyStep.isCompleted = false;
-      companyStep.completionPercentage = 0;
-    }
-  }
-  // NO llamar applyUnlockLogic() aquí
-}
-
-private ensureUserCharacterizationNotCompleted() {
-  const configFlow = this.progressFlows.get('configuration');
-  if (configFlow) {
-    const userStep = configFlow.steps.find(s => s.id === 'user-characterization');
-    if (userStep) {
-      userStep.isCompleted = false;
-      userStep.completionPercentage = 0;
-    }
-  }
-  // NO llamar applyUnlockLogic() aquí
-}
-
-  // Cargar progreso de factores (código existente adaptado)
-  private async loadFactorsProgress(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    // Verificar si ya tenemos el encuestaId guardado
-    const savedEncuestaId = localStorage.getItem('encuestaId');
+  private async loadCharacterizationsProgress(): Promise<void> {
+    const promises = [
+      this.loadCompanyCharacterization(),
+      this.loadUserCharacterization()
+    ];
     
-    if (savedEncuestaId) {
-      console.log('📋 Usando encuestaId guardado:', savedEncuestaId);
-      this.loadResultados(savedEncuestaId).then(resolve).catch(resolve); // No rechazar
-    } else {
-      console.log('🔄 Obteniendo nuevo encuestaId...');
+    await Promise.all(promises);
+  }
+
+  // Cargar caracterización de empresa
+  private loadCompanyCharacterization(): Promise<void> {
+    return new Promise((resolve, reject) => {
       this.commonsService.getWithHandling(
-        `CaracterizacionUsuario/GetIdEncuenstaByEmpresa`,
+        'Caracterizacion/VerificarCaracterizacionEmpresa',
         (response: any) => {
-          console.log('📋 Respuesta ID encuesta:', response);
           
-          if (response?.data?.[0]?.idEncuesta) {
-            const encuestaId = response.data[0].idEncuesta;
-            localStorage.setItem('encuestaId', encuestaId);
+          
+          const configFlow = this.progressFlows.get('configuration');
+          if (configFlow && response?.ok && response?.data && response.data.length > 0) {
+            const caracterizacionData = response.data[0];
+            const companyStep = configFlow.steps.find(s => s.id === 'company-characterization');
             
-            this.loadResultados(encuestaId).then(resolve).catch(resolve); // No rechazar
+            if (companyStep) {
+              companyStep.isCompleted = caracterizacionData.completed || false;
+              companyStep.completionPercentage = caracterizacionData.percentage || 0;
+          
+            }
           } else {
-            console.warn('⚠️ No se pudo obtener encuestaId');
-            resolve(); // Continuar sin datos
+            this.ensureCompanyCharacterizationNotCompleted();
           }
+          resolve();
         },
         (validationErrors) => {
-          console.warn('⚠️ Error validación encuestaId:', validationErrors);
-          resolve(); // No rechazar, solo continuar
+          console.warn('⚠️ Error validación empresa:', validationErrors);
+          this.ensureCompanyCharacterizationNotCompleted();
+          resolve();
         },
         (errors) => {
-          console.warn('⚠️ Error encuestaId:', errors);
-          resolve(); // No rechazar, solo continuar
+          console.warn('⚠️ Error empresa:', errors);
+          this.ensureCompanyCharacterizationNotCompleted();
+          resolve();
         }
       );
-    }
-  });
-}
+    });
+  }
 
-
-private loadResultados(encuestaId: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    console.log('🔄 Cargando resultados para encuesta:', encuestaId);
-    
-    this.commonsService.getByIdWithHandling(
-      'Respuesta/ObtenerResultadosEncuesta',
-      encuestaId,
-      (response: any) => {
-        console.log('✅ Resultados obtenidos:', response);
-        
-        let resultadosData = this.extractResultadosData(response);
-        console.log('📊 Datos extraídos:', resultadosData);
-        
-        if (resultadosData?.resultadosPorFactor?.length > 0) {
-          console.log('🔄 Actualizando factores...');
-          this.updateFactorsFromBackendData(resultadosData);
-          console.log('✅ Factores actualizados');
-        } else {
-          console.warn('⚠️ No hay datos de progreso para mostrar');
+  // Cargar caracterización de usuario
+  private loadUserCharacterization(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.commonsService.getWithHandling(
+        'Caracterizacion/VerificarCaracterizacionUsuario',
+        (response: any) => {
+          
+          
+          const configFlow = this.progressFlows.get('configuration');
+          if (configFlow && response?.ok && response?.data && response.data.length > 0) {
+            const caracterizacionData = response.data[0];
+            const userStep = configFlow.steps.find(s => s.id === 'user-characterization');
+            
+            if (userStep) {
+              userStep.isCompleted = caracterizacionData.completed || false;
+              userStep.completionPercentage = caracterizacionData.percentage || 0;
+         
+            }
+          } else {
+            this.ensureUserCharacterizationNotCompleted();
+          }
+          resolve();
+        },
+        (validationErrors) => {
+          console.warn('⚠️ Error validación usuario:', validationErrors);
+          this.ensureUserCharacterizationNotCompleted();
+          resolve();
+        },
+        (errors) => {
+          console.warn('⚠️ Error usuario:', errors);
+          this.ensureUserCharacterizationNotCompleted();
+          resolve();
         }
-        resolve();
-      },
-      (validationErrors) => {
-        console.warn('⚠️ Error validación resultados:', validationErrors);
-        resolve(); // No rechazar, solo continuar
-      },
-      (errors) => {
-        console.warn('⚠️ Error resultados:', errors);
-        resolve(); // No rechazar, solo continuar
-      }
-    );
-  });
-}
+      );
+    });
+  }
 
-  // Aplicar lógica completa de desbloqueo
+  // Métodos auxiliares para asegurar estados no completados
+  private ensureCompanyCharacterizationNotCompleted() {
+    const configFlow = this.progressFlows.get('configuration');
+    if (configFlow) {
+      const companyStep = configFlow.steps.find(s => s.id === 'company-characterization');
+      if (companyStep) {
+        companyStep.isCompleted = false;
+        companyStep.completionPercentage = 0;
+      }
+    }
+  }
+
+  private ensureUserCharacterizationNotCompleted() {
+    const configFlow = this.progressFlows.get('configuration');
+    if (configFlow) {
+      const userStep = configFlow.steps.find(s => s.id === 'user-characterization');
+      if (userStep) {
+        userStep.isCompleted = false;
+        userStep.completionPercentage = 0;
+      }
+    }
+  }
+
+  // Cargar progreso de factores
+  private async loadFactorsProgress(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const savedEncuestaId = localStorage.getItem('encuestaId');
+      
+      if (savedEncuestaId) {
+        
+        this.loadResultados(savedEncuestaId).then(resolve).catch(resolve);
+      } else {
+        
+        this.commonsService.getWithHandling(
+          `CaracterizacionUsuario/GetIdEncuenstaByEmpresa`,
+          (response: any) => {
+            
+            
+            if (response?.data?.[0]?.idEncuesta) {
+              const encuestaId = response.data[0].idEncuesta;
+              localStorage.setItem('encuestaId', encuestaId);
+              
+              this.loadResultados(encuestaId).then(resolve).catch(resolve);
+            } else {
+              console.warn('⚠️ No se pudo obtener encuestaId');
+              resolve();
+            }
+          },
+          (validationErrors) => {
+            console.warn('⚠️ Error validación encuestaId:', validationErrors);
+            resolve();
+          },
+          (errors) => {
+            console.warn('⚠️ Error encuestaId:', errors);
+            resolve();
+          }
+        );
+      }
+    });
+  }
+
+  private loadResultados(encuestaId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      
+      
+      this.commonsService.getByIdWithHandling(
+        'Respuesta/ObtenerResultadosEncuesta',
+        encuestaId,
+        (response: any) => {
+          
+          
+          let resultadosData = this.extractResultadosData(response);
+          
+          
+          if (resultadosData?.resultadosPorFactor?.length > 0) {
+            
+            this.updateFactorsFromBackendData(resultadosData);
+            
+          } else {
+            console.warn('⚠️ No hay datos de progreso para mostrar');
+          }
+          resolve();
+        },
+        (validationErrors) => {
+          console.warn('⚠️ Error validación resultados:', validationErrors);
+          resolve();
+        },
+        (errors) => {
+          console.warn('⚠️ Error resultados:', errors);
+          resolve();
+        }
+      );
+    });
+  }
+
+  // ACTUALIZADO: Aplicar lógica completa de desbloqueo (incluye reportes)
   private applyUnlockLogic() {
     const configFlow = this.progressFlows.get('configuration');
     const factorsFlow = this.progressFlows.get('factors');
+    const reportsFlow = this.progressFlows.get('reports'); // NUEVO
 
-    if (!configFlow || !factorsFlow) return;
+    if (!configFlow || !factorsFlow || !reportsFlow) {
+      console.warn('⚠️ No se encontraron todos los flujos necesarios');
+      return;
+    }
+
+    
 
     // 1. Desbloquear caracterización de usuario si empresa está completa
     const companyStep = configFlow.steps.find(
@@ -412,7 +482,41 @@ private loadResultados(encuestaId: string): Promise<void> {
     // 4. Desbloquear factores secuencialmente
     this.unlockFactorsSequentially(factorsFlow);
 
-    // 5. Actualizar subject
+    // 5. NUEVO: Desbloquear reportes - LÓGICA MEJORADA
+    const lastFactor = factorsFlow.steps[factorsFlow.steps.length - 1]; // factor8 (Tecnología)
+    
+    // Log detallado del estado del último factor
+
+
+    // Verificar múltiples condiciones para asegurar que el factor está realmente completado
+    const isLastFactorCompleted = lastFactor && (
+      (lastFactor.isCompleted === true) || 
+      (lastFactor.completionPercentage >= 100)
+    );
+    
+ 
+    // Desbloquear todos los reportes si el último factor está completado
+    if (isLastFactorCompleted) {
+      
+      reportsFlow.steps.forEach(reportStep => {
+        const wasLocked = !reportStep.isUnlocked;
+        reportStep.isUnlocked = true;
+        
+        if (wasLocked) {
+          
+        }
+      });
+    } else {
+      
+      reportsFlow.steps.forEach(reportStep => {
+        reportStep.isUnlocked = false;
+      });
+    }
+
+    // 6. Log final del estado de reportes
+  
+
+    // 7. Actualizar subject
     this.progressSubject.next(this.progressFlows);
     this.saveProgress();
   }
@@ -437,11 +541,21 @@ private loadResultados(encuestaId: string): Promise<void> {
       });
     }
 
+    // NUEVO: Resetear reportes
+    const reportsFlow = this.progressFlows.get('reports');
+    if (reportsFlow) {
+      reportsFlow.steps.forEach((step) => {
+        step.isUnlocked = false; // TODOS los reportes bloqueados
+        step.isCompleted = false;
+        step.completionPercentage = 0;
+      });
+    }
+
     this.progressSubject.next(this.progressFlows);
     this.saveProgress();
   }
 
-  // Método para extraer datos de la respuesta (código existente)
+  // Método para extraer datos de la respuesta
   private extractResultadosData(response: any): any {
     if (
       response?.ok &&
@@ -480,84 +594,75 @@ private loadResultados(encuestaId: string): Promise<void> {
     return null;
   }
 
-  // Actualizar factores basado en datos del backend (código existente adaptado)
+  // Actualizar factores basado en datos del backend
   private updateFactorsFromBackendData(backendData: any) {
-  console.log('🔄 Iniciando actualización de factores con datos:', backendData);
-  
-  const factorsFlow = this.progressFlows.get('factors');
-  if (!factorsFlow) {
-    console.error('❌ No se encontró el flujo de factores');
-    return;
-  }
-
-  const factorNameToStepId: { [key: string]: string } = {
-    GE: 'factor1',
-    OGS: 'factor2',
-    AC: 'factor3',
-    GMC: 'factor4',
-    EGF: 'factor5',
-    GRH: 'factor6',
-    GA: 'factor7',
-    TSI: 'factor8',
-  };
-
-  const factorIdToStepId: { [key: number]: string } = {
-    3: 'factor1',
-    4: 'factor2',
-    5: 'factor3',
-    6: 'factor4',
-    7: 'factor5',
-    8: 'factor6',
-    9: 'factor7',
-    10: 'factor8',
-  };
-
-  if (backendData.resultadosPorFactor && Array.isArray(backendData.resultadosPorFactor)) {
-    console.log(`📊 Procesando ${backendData.resultadosPorFactor.length} factores...`);
     
-    backendData.resultadosPorFactor.forEach((factor: any, index: number) => {
-      console.log(`🔍 Procesando factor ${index + 1}:`, factor);
+    
+    const factorsFlow = this.progressFlows.get('factors');
+    if (!factorsFlow) {
+      console.error('❌ No se encontró el flujo de factores');
+      return;
+    }
+
+    const factorNameToStepId: { [key: string]: string } = {
+      GE: 'factor1',
+      OGS: 'factor2',
+      AC: 'factor3',
+      GMC: 'factor4',
+      EGF: 'factor5',
+      GRH: 'factor6',
+      GA: 'factor7',
+      TSI: 'factor8',
+    };
+
+    const factorIdToStepId: { [key: number]: string } = {
+      3: 'factor1',
+      4: 'factor2',
+      5: 'factor3',
+      6: 'factor4',
+      7: 'factor5',
+      8: 'factor6',
+      9: 'factor7',
+      10: 'factor8',
+    };
+
+    if (backendData.resultadosPorFactor && Array.isArray(backendData.resultadosPorFactor)) {
       
-      const factorName = factor.nombreFactor?.trim();
-      let stepId = factorNameToStepId[factorName];
+      
+      backendData.resultadosPorFactor.forEach((factor: any, index: number) => {
+        
+        
+        const factorName = factor.nombreFactor?.trim();
+        let stepId = factorNameToStepId[factorName];
 
-      if (!stepId) {
-        stepId = factorIdToStepId[factor.idFactor];
-      }
+        if (!stepId) {
+          stepId = factorIdToStepId[factor.idFactor];
+        }
 
-      console.log(`🎯 Factor ${factorName} (ID: ${factor.idFactor}) -> StepID: ${stepId}`);
 
-      const factorStep = factorsFlow.steps.find((s) => s.id === stepId);
+        const factorStep = factorsFlow.steps.find((s) => s.id === stepId);
 
-      if (factorStep) {
-        console.log(`✅ Marcando factor ${stepId} como completado`);
-        factorStep.completionPercentage = 100;
-        factorStep.isCompleted = true;
-      } else {
-        console.warn(`⚠️ No se encontró el paso para el factor: ${stepId}`);
-      }
-    });
-    
-    console.log('📊 Estado final de factores:', 
-      factorsFlow.steps.map(s => ({
-        id: s.id,
-        name: s.name,
-        completed: s.isCompleted,
-        percentage: s.completionPercentage
-      }))
-    );
-  } else {
-    console.warn('⚠️ No hay resultados por factor o el formato es incorrecto');
+        if (factorStep) {
+          factorStep.completionPercentage = 100;
+          factorStep.isCompleted = true;
+        } else {
+          console.warn(`⚠️ No se encontró el paso para el factor: ${stepId}`);
+        }
+      });
+      
+  
+    } else {
+      console.warn('⚠️ No hay resultados por factor o el formato es incorrecto');
+    }
   }
-}
-  // Desbloquear factores secuencialmente (código existente)
+
+  // Desbloquear factores secuencialmente
   private unlockFactorsSequentially(flow: ProgressFlow) {
     for (let i = 0; i < flow.steps.length; i++) {
       const currentStep = flow.steps[i];
 
       if (i === 0) {
         // El primer factor se desbloquea solo si las caracterizaciones están completas
-        // (ya se manejó en applyUnlockLogic)
       } else {
         // Los siguientes factores se desbloquean si el anterior está completado
         const previousStep = flow.steps[i - 1];
@@ -588,31 +693,67 @@ private loadResultados(encuestaId: string): Promise<void> {
     this.applyUnlockLogic();
   }
 
-  // Métodos de utilidad y consulta (código existente)
-  debugCurrentState() {
-    const configFlow = this.progressFlows.get('configuration');
+  // NUEVO: Método específico para verificar si los reportes están desbloqueados
+  areReportsUnlocked(): boolean {
     const factorsFlow = this.progressFlows.get('factors');
-
-    if (configFlow) {
-      configFlow.steps.forEach((step, index) => {
-        console.log(`${index + 1}. ${step.id} (${step.name}):`, {
-          isUnlocked: step.isUnlocked,
-          isCompleted: step.isCompleted,
-          percentage: step.completionPercentage,
-        });
-      });
+    if (!factorsFlow) {
+      console.warn('⚠️ No se encontró flujo de factores');
+      return false;
     }
 
-    if (factorsFlow) {
-      factorsFlow.steps.forEach((step, index) => {
-        console.log(`${index + 1}. ${step.id} (${step.name}):`, {
-          isUnlocked: step.isUnlocked,
-          isCompleted: step.isCompleted,
-          percentage: step.completionPercentage,
-        });
-      });
-    }
+    const lastFactor = factorsFlow.steps[factorsFlow.steps.length - 1];
+    const isCompleted = lastFactor && (
+      (lastFactor.isCompleted === true) || 
+      (lastFactor.completionPercentage >= 100)
+    );
+
+
+    return !!isCompleted;
   }
+
+  // NUEVO: Método público para forzar inicialización completa
+  forceReinitialize() {
+    
+    console.log('reinicializando');
+    
+    // Limpiar flujos existentes
+    this.progressFlows.clear();
+    
+    // Reinicializar todos los flujos
+    this.initializeAllFlows();
+    
+    // Aplicar lógica de desbloqueo
+    this.applyUnlockLogic();
+    
+    
+    
+    return this.progressFlows;
+  }
+
+  // NUEVO: Método para obtener el valor actual de los flows
+  getCurrentProgressFlows(): Map<string, ProgressFlow> {
+    return this.progressFlows;
+  }
+
+  // NUEVO: Método para forzar recarga y verificación del estado de reportes
+  forceCheckReportsStatus() {
+    
+    
+    // Aplicar lógica de desbloqueo
+    this.applyUnlockLogic();
+    
+    // Verificar estado actual
+    const reportsUnlocked = this.areReportsUnlocked();
+    const reportsFlow = this.progressFlows.get('reports');
+    
+    // Forzar actualización del subject
+    this.progressSubject.next(this.progressFlows);
+    
+    return reportsUnlocked;
+  }
+
+  // Métodos de utilidad y consulta
+  
 
   getFlow(flowId: string): ProgressFlow | undefined {
     return this.progressFlows.get(flowId);

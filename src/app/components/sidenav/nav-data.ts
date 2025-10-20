@@ -12,14 +12,14 @@ export const navbarData: INavbarData[] = [
         label: 'Caracterización Empresa',
         isLocked: false, // Se actualizará dinámicamente
         isCompleted: false, // Se actualizará dinámicamente
-        completionPercentage: 0 // Se actualizará dinámicamente
+        completionPercentage: 0, // Se actualizará dinámicamente
       },
       {
         routeLink: '',
         label: 'Caracterización usuario',
         isLocked: true, // Se actualizará dinámicamente
         isCompleted: false, // Se actualizará dinámicamente
-        completionPercentage: 0 // Se actualizará dinámicamente
+        completionPercentage: 0, // Se actualizará dinámicamente
       },
       {
         routeLink: '#',
@@ -40,14 +40,36 @@ export const navbarData: INavbarData[] = [
   // Los factores ahora se generarán dinámicamente desde el servicio
   {
     routeLink: '#',
-    icon: 'pi pi-chart-line',
+    icon: 'pi pi-clipboard',
     label: 'Evaluación de Competitividad',
-    items: [] // Se llenará dinámicamente con los factores
+    items: [], // Se llenará dinámicamente con los factores
   },
   {
-    routeLink: 'reporte',
+    routeLink: '#',
     icon: 'pi pi-chart-line',
-    label: 'repo',
-    
-  }
+    label: 'Reportes',
+    items: [
+      {
+        routeLink: 'reporte',
+        label: 'Reporte General',
+      },
+      {
+        routeLink: 'reportedetallado',
+        label: 'Reportes Detallados',
+      },
+    ],
+  },
+  {
+    routeLink: '#',
+    icon: 'pi pi-user',
+    label: 'Perfil',
+    items: [
+      {
+        routeLink: '',
+        icon: 'pi pi-sign-out',
+        label: 'Cerrar Sesión',
+        isLogout: true, // Agregar flag para identificarlo
+      },
+    ],
+  },
 ];

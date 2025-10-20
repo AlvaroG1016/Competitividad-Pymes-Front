@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-
+import { ProgressLockService } from '../../services/progress-lock.service';
 
 @Component({
   selector: 'app-body',
@@ -8,10 +8,18 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
   styleUrl: './body.component.css',
 })
-export class BodyComponent  {
+export class BodyComponent implements OnInit, OnDestroy {
   @Input() collapsed = false; 
   @Input() screenWidth = 0; 
 
+  constructor(private progressLockService: ProgressLockService) {}
+
+  ngOnInit(): void {
+    this.progressLockService.forceReinitialize();
+  }
+  ngOnDestroy(): void {
+    //this.progressLockService.forceReinitialize();
+  }
   getBodyClass():string{
     let styleClass = '';
     if(this.collapsed && this.screenWidth > 768){

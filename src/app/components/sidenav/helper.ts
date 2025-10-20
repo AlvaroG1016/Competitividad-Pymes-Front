@@ -6,11 +6,11 @@ export interface INavbarData {
     label: string;
     expanded?: boolean;
     items?: INavbarData[];
-    
     // Nuevas propiedades para el sistema de restricciones
     isLocked?: boolean;
     isCompleted?: boolean;
     completionPercentage?: number;
+    isLogout?: boolean;
 }
 
 export const fadeInOut = trigger('fadeInOut', [

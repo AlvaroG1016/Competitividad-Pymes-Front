@@ -57,9 +57,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private progressSubscription: Subscription | null = null;
 
   @Output() onToggleSideNav: EventEmitter<SideNavToggle> = new EventEmitter();
-  collapsed = false;
   screenWidth = 0;
   multiple = false;
+  collapsed = false;
   navData: INavbarData[] = [];
 
   @HostListener('window:resize', ['$event'])
@@ -97,7 +97,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.progressService.loadProgressFromStorage();
       
       // Cargar progreso completo (caracterizaciones + factores)
-      
       this.progressService.loadProgressFromBackend();
     }, 100);
   }
@@ -112,15 +111,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private updateNavigationWithProgress(progressFlows: Map<string, ProgressFlow>) {
-
-    
     // Actualizar configuración (caracterizaciones)
     this.updateConfigurationMenu(progressFlows);
     
     // Actualizar evaluación de competitividad (factores)
     this.updateCompetitivityMenu(progressFlows);
     
-
+    // NUEVO: Actualizar reportes
+    this.updateReportsMenu(progressFlows);
   }
 
   private updateConfigurationMenu(progressFlows: Map<string, ProgressFlow>) {
@@ -147,8 +145,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
           menuItem.isLocked = !companyStep.isUnlocked;
           menuItem.isCompleted = companyStep.isCompleted;
           menuItem.completionPercentage = companyStep.completionPercentage;
-          
-
         }
       }
 
@@ -166,8 +162,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
           menuItem.isLocked = !userStep.isUnlocked;
           menuItem.isCompleted = userStep.isCompleted;
           menuItem.completionPercentage = userStep.completionPercentage;
-          
-
         }
       }
     }
@@ -199,21 +193,75 @@ export class SidenavComponent implements OnInit, OnDestroy {
       const unlockedFactors = factorMenuItems.filter(item => !item.isLocked).length;
       const completedFactors = factorMenuItems.filter(item => item.isCompleted).length;
 
-      
       // Verificar si los factores están disponibles
       const factorsAvailable = this.progressService.areFactorsUnlocked();
+    }
+  }
 
+  // NUEVO: Método para actualizar el menú de reportes
+  private updateReportsMenu(progressFlows: Map<string, ProgressFlow>) {
+    const reportsFlow = progressFlows.get('reports');
+    if (!reportsFlow) {
+      console.warn('⚠️ No se encontró flujo de reportes');
+      return;
+    }
+
+    // Encontrar el menú de reportes
+    const reportsMenuIndex = this.navData.findIndex(
+      item => item.label === 'Reportes'
+    );
+
+    if (reportsMenuIndex !== -1 && this.navData[reportsMenuIndex].items) {
+      
+      
+      // Verificar estado del último factor
+      const lastFactorCompleted = this.progressService.isStepCompleted('factors', 'factor8');
+      const reportsUnlocked = this.progressService.areReportsUnlocked();
+      
+
+
+      // Actualizar cada item de reporte con el estado del flujo de progreso
+      reportsFlow.steps.forEach((reportStep, index) => {
+        // Buscar el item correspondiente en el menú
+        const reportItemIndex = this.navData[reportsMenuIndex].items!.findIndex(
+          item => item.routeLink === reportStep.routeLink
+        );
+
+        if (reportItemIndex !== -1) {
+          const menuItem = this.navData[reportsMenuIndex].items![reportItemIndex];
+          const wasLocked = menuItem.isLocked;
+          
+          menuItem.isLocked = !reportStep.isUnlocked;
+          menuItem.isCompleted = reportStep.isCompleted;
+          menuItem.completionPercentage = reportStep.completionPercentage;
+          
+      
+        } else {
+          console.warn(`⚠️ No se encontró item de menú para reporte: ${reportStep.routeLink}`);
+        }
+      });
+
+      // Si no hay correspondencia exacta, forzar actualización basada en el estado del último factor
+      if (lastFactorCompleted) {
+        
+        this.navData[reportsMenuIndex].items!.forEach(menuItem => {
+          if (menuItem.routeLink === 'reporte' || menuItem.routeLink === 'reportedetallado') {
+            menuItem.isLocked = false;
+            
+          }
+        });
+      }
+
+ 
+    } else {
+      console.warn('⚠️ No se encontró el menú de reportes o no tiene items');
     }
   }
 
   // Método para obtener el ID del usuario actual
   private getCurrentUserId(): number {
     // TODO: Implementar según tu sistema de autenticación
-    // Por ejemplo, desde localStorage, sessionStorage, o un servicio de autenticación
-    // return this.authService.getCurrentUserId();
-    
-    // Por ahora retornamos un ID fijo para testing
-    return 1; // Cambiar por la implementación real
+    return 1;
   }
 
   expandSidenav(): void {
@@ -268,12 +316,23 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   // Método para verificar si se puede navegar a una ruta
-  canNavigate(item: INavbarData): boolean {
+   canNavigate(item: INavbarData): boolean {
+    // No permitir navegación automática para logout
+    if (item.isLogout) {
+      return false;
+    }
     return !item.isLocked;
   }
 
   // Método para manejar click en item de factor
   onFactorClick(item: INavbarData, event: Event) {
+     if (item.isLogout) {
+      
+      event.preventDefault();
+      localStorage.clear();
+      this.router.navigateByUrl('/login');
+      return false;
+    }
     if (item.isLocked) {
       event.preventDefault();
       event.stopPropagation();
@@ -283,15 +342,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  // Mostrar mensaje apropiado según el tipo de bloqueo
   private showLockedMessage(item: INavbarData) {
     const factorsFlow = this.progressService.getFlow('factors');
     const configFlow = this.progressService.getFlow('configuration');
+    const reportsFlow = this.progressService.getFlow('reports'); // NUEVO
     
-    if (!factorsFlow || !configFlow) return;
+    if (!factorsFlow || !configFlow || !reportsFlow) return;
     
-    // Verificar si es un factor
     const isFactor = factorsFlow.steps.some(step => step.name === item.label);
+    
+    const isReport = reportsFlow.steps.some(step => step.routeLink === item.routeLink);
     
     if (isFactor) {
       // Es un factor bloqueado
@@ -299,19 +359,27 @@ export class SidenavComponent implements OnInit, OnDestroy {
       const userCompleted = this.progressService.isStepCompleted('configuration', 'user-characterization');
       
       if (!companyCompleted) {
-
+        
         // TODO: Mostrar toast o modal
       } else if (!userCompleted) {
-
+        
         // TODO: Mostrar toast o modal
       } else {
-
+        
         // TODO: Mostrar toast o modal
       }
+    } else if (isReport) {
+      // NUEVO: Es un reporte bloqueado
+      const lastFactorCompleted = this.progressService.isStepCompleted('factors', 'factor8');
+      
+      if (!lastFactorCompleted) {
+        
+        // TODO: Mostrar toast o modal con mensaje específico para reportes
+        
+      }
     } else {
-      // Es una caracterización bloqueada
       if (item.label === 'Caracterización usuario') {
-
+        
         // TODO: Mostrar toast o modal
       }
     }
@@ -351,12 +419,72 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return buildMenuTree(null);
   }
 
-  // Método para debugging
+  // Método para debugging - TEMPORAL
   debugProgressState() {
-    this.progressService.debugCurrentState();
+    
+    
+    // Verificar que todos los flujos existan
+    const configFlow = this.progressService.getFlow('configuration');
+    const factorsFlow = this.progressService.getFlow('factors');
+    const reportsFlow = this.progressService.getFlow('reports');
+    
+
+    
+    if (!reportsFlow) {
+      console.error('❌ PROBLEMA: Flujo de reportes no existe');
+      
+      this.progressService.forceReinitialize();
+    }
+    
+    
+    // Estado específico de reportes
+    const reportsUnlocked = this.progressService.areReportsUnlocked();
+    const lastFactorCompleted = this.progressService.isStepCompleted('factors', 'factor8');
+    
+    
+    
+    
+    
+    // Forzar verificación
+    const forceCheck = this.progressService.forceCheckReportsStatus();
+    
+    
+    // Estado del menú de reportes
+    const reportsMenu = this.navData.find(item => item.label === 'Reportes');
+ 
+  }
+
+  // NUEVO: Método público para forzar actualización desde la consola
+  forceUpdateReports() {
+    
+    
+    // Primero verificar que el flujo de reportes exista
+    let reportsFlow = this.progressService.getFlow('reports');
+    
+    if (!reportsFlow) {
+      console.warn('⚠️ Flujo de reportes no existe, forzando reinicialización...');
+      this.progressService.forceReinitialize();
+      reportsFlow = this.progressService.getFlow('reports');
+    }
+    
+    if (!reportsFlow) {
+      console.error('❌ FALLO CRÍTICO: No se puede crear el flujo de reportes');
+      return;
+    }
+    
+    // Forzar verificación del servicio
+    this.progressService.forceCheckReportsStatus();
+    
+    // Obtener los flows actuales del servicio
+    const progressFlows = this.progressService.getCurrentProgressFlows();
+    
+    // Forzar actualización del menú
+    this.updateReportsMenu(progressFlows);
+    
+    
   }
 
   tabs() {
-
+    // Implementación de tabs si es necesario
   }
 }
