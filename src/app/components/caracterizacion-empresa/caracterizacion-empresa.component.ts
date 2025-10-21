@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonsLibService } from '../../services/commons-lib.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ProgressLockService } from '../../services/progress-lock.service'; // AGREGAR ESTA LÍNEA
+import { ProgressLockService } from '../../services/progress-lock.service';
 
 @Component({
   selector: 'app-caracterizacion-empresa',
@@ -18,6 +18,8 @@ export class CaracterizacionEmpresaComponent implements OnInit {
   dataCaracterizacion: any = null;
   isLoading: boolean = true;
   private successTimeout: any;
+  sectores: any[] = [];
+  subsectores: any[] = [];
 
   clasificacionOptions = [
     { label: 'Microempresa', value: 'micro' },
@@ -30,40 +32,44 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     private fb: FormBuilder,
     private commonsService: CommonsLibService,
     private readonly dialog: MatDialog,
-    private progressService: ProgressLockService // AGREGAR ESTA LÍNEA
+    private progressService: ProgressLockService
   ) {}
 
   async ngOnInit() {
     this.initializeForm();
     await this.loadExistingData();
+    await this.loadSectores();
+
+    this.surveyForm.get('sector')?.valueChanges.subscribe(async (idSector) => {
+      if (idSector) {
+        this.surveyForm.get('subsector')?.enable();
+        await this.loadSubsectores(idSector);
+      } else {
+        this.surveyForm.get('subsector')?.disable();
+        this.subsectores = [];
+      }
+    });
   }
 
   private async loadExistingData(): Promise<void> {
     try {
       this.isLoading = true;
 
-      
       await this.validateCaracterizacionEmpresa();
-      
+
       if (this.esCaracterizado && this.dataCaracterizacion) {
         this.loadDataToForm();
-
       } else {
-
       }
-      
-      this.isLoading = false;
-      
-    } catch (error) {
 
+      this.isLoading = false;
+    } catch (error) {
       this.isLoading = false;
     }
   }
 
   private loadDataToForm(): void {
     if (!this.dataCaracterizacion) return;
-
-
 
     this.surveyForm.patchValue({
       name: this.dataCaracterizacion.nombreEmpresa || '',
@@ -72,11 +78,10 @@ export class CaracterizacionEmpresaComponent implements OnInit {
       institutionalEmail: this.dataCaracterizacion.correo || '',
       presencia: this.dataCaracterizacion.tiempoMercado || '',
       clasificacion: this.dataCaracterizacion.clasificacionEmpresa || '',
-      telefono: this.dataCaracterizacion.telefono || ''
+      telefono: this.dataCaracterizacion.telefono || '',
     });
 
     this.surveyForm.markAsPristine();
-
   }
 
   private initializeForm(): void {
@@ -89,23 +94,14 @@ export class CaracterizacionEmpresaComponent implements OnInit {
           Validators.pattern(/^[a-zA-ZÀ-ÿ\u00f1\u00d1\s\.\-\_0-9]+$/),
         ],
       ],
-      presencia: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(1)
-        ],
-      ],
+      presencia: ['', [Validators.required, Validators.minLength(1)]],
       clasificacion: ['', Validators.required],
-      telefono: ['', [
-        Validators.required,
-        Validators.pattern(/^[0-9+\-\s\(\)]+$/)
-      ]],
-      location: ['', [Validators.required, Validators.minLength(2)]],
-      address: [
+      telefono: [
         '',
-        [Validators.required, Validators.minLength(5)],
+        [Validators.required, Validators.pattern(/^[0-9+\-\s\(\)]+$/)],
       ],
+      location: ['', [Validators.required, Validators.minLength(2)]],
+      address: ['', [Validators.required, Validators.minLength(5)]],
       institutionalEmail: [
         '',
         [
@@ -116,6 +112,8 @@ export class CaracterizacionEmpresaComponent implements OnInit {
           ),
         ],
       ],
+      sector: ['', Validators.required],
+      subsector: [{ value: '', disabled: true }, Validators.required],
     });
 
     this.surveyForm.valueChanges.subscribe(() => {
@@ -129,34 +127,26 @@ export class CaracterizacionEmpresaComponent implements OnInit {
       this.commonsService.getWithHandling(
         'CaracterizacionEmpresa/GetCaracterizacionEmpresaByIdEmpresa',
         (response: any) => {
-
-          
           if (response?.ok && response?.data && response.data.length > 0) {
             const data = response.data[0];
             this.esCaracterizado = data.caracterizado || false;
             this.dataCaracterizacion = data;
-            
 
-            
             if (this.esCaracterizado) {
-
             }
           } else {
             this.esCaracterizado = false;
             this.dataCaracterizacion = null;
-
           }
-          
+
           resolve();
         },
         (validationErrors) => {
-
           this.esCaracterizado = false;
           this.dataCaracterizacion = null;
           resolve();
         },
         (errors) => {
-
           this.esCaracterizado = false;
           this.dataCaracterizacion = null;
           resolve();
@@ -224,8 +214,10 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     switch (fieldName) {
       case 'name':
         if (errors['required']) return 'El nombre de la empresa es requerido';
-        if (errors['minlength']) return 'El nombre debe tener al menos 3 caracteres';
-        if (errors['pattern']) return 'El nombre contiene caracteres no válidos';
+        if (errors['minlength'])
+          return 'El nombre debe tener al menos 3 caracteres';
+        if (errors['pattern'])
+          return 'El nombre contiene caracteres no válidos';
         break;
 
       case 'telefono':
@@ -235,12 +227,14 @@ export class CaracterizacionEmpresaComponent implements OnInit {
 
       case 'location':
         if (errors['required']) return 'La ciudad es requerida';
-        if (errors['minlength']) return 'La ciudad debe tener al menos 2 caracteres';
+        if (errors['minlength'])
+          return 'La ciudad debe tener al menos 2 caracteres';
         break;
 
       case 'address':
         if (errors['required']) return 'La dirección es requerida';
-        if (errors['minlength']) return 'La dirección debe tener al menos 5 caracteres';
+        if (errors['minlength'])
+          return 'La dirección debe tener al menos 5 caracteres';
         break;
 
       case 'presencia':
@@ -253,7 +247,8 @@ export class CaracterizacionEmpresaComponent implements OnInit {
 
       case 'institutionalEmail':
         if (errors['required']) return 'El correo institucional es requerido';
-        if (errors['email'] || errors['pattern']) return 'Ingrese un correo electrónico válido';
+        if (errors['email'] || errors['pattern'])
+          return 'Ingrese un correo electrónico válido';
         break;
     }
 
@@ -271,23 +266,21 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     try {
       var data = this.prepareFormData();
 
-      
       if (this.esCaracterizado) {
-
       } else {
-
         await this.createCaracterizacion(data);
       }
 
       this.showSuccessMessage();
-      
 
-      this.progressService.completeStep('configuration', 'company-characterization', 100);
-      
+      this.progressService.completeStep(
+        'configuration',
+        'company-characterization',
+        100
+      );
+
       await this.loadExistingData();
-      
     } catch (error) {
-
       this.showErrorMessage();
     } finally {
       this.isSubmitting = false;
@@ -300,16 +293,13 @@ export class CaracterizacionEmpresaComponent implements OnInit {
         'CaracterizacionEmpresa/CrearCaracterizacionEmpresa',
         data,
         (response: any) => {
-
           resolve(response);
         },
         (validationErrors) => {
-
           this.showErrorMessage();
           reject(validationErrors);
         },
         (errors) => {
-
           this.showErrorMessage();
           reject(errors);
         }
@@ -341,10 +331,10 @@ export class CaracterizacionEmpresaComponent implements OnInit {
   }
 
   private showSuccessMessage(): void {
-    const mensaje = this.esCaracterizado ? 
-      'Caracterización actualizada exitosamente' : 
-      'Caracterización creada exitosamente';
-      
+    const mensaje = this.esCaracterizado
+      ? 'Caracterización actualizada exitosamente'
+      : 'Caracterización creada exitosamente';
+
     this.commonsService.openResultModal(
       this.dialog,
       true,
@@ -372,7 +362,9 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     }
 
     if (this.surveyForm.valid) {
-      return this.esCaracterizado ? 'Actualizar Caracterización' : 'Guardar Caracterización';
+      return this.esCaracterizado
+        ? 'Actualizar Caracterización'
+        : 'Guardar Caracterización';
     }
 
     return `Complete todos los campos (${this.getFormProgress()}%)`;
@@ -382,9 +374,9 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     if (this.isLoading) {
       return 'Cargando...';
     }
-    return this.esCaracterizado ? 
-      'Editar Caracterización de Empresa' : 
-      'Caracterización de Empresa';
+    return this.esCaracterizado
+      ? 'Editar Caracterización de Empresa'
+      : 'Caracterización de Empresa';
   }
 
   shouldShowLoader(): boolean {
@@ -395,7 +387,6 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     const field = this.surveyForm.get(fieldName);
 
     if (field && field.valid && field.touched) {
-
     }
   }
 
@@ -404,5 +395,49 @@ export class CaracterizacionEmpresaComponent implements OnInit {
     if (field) {
       field.markAsUntouched();
     }
+  }
+
+  private async loadSectores(): Promise<void> {
+    this.commonsService.getWithHandling(
+      'CaracterizacionEmpresa/GetAllSectores',
+      (response: any) => {
+        if (response?.ok && response?.data) {
+          console.log('Sectores cargados:', response.data);
+          this.sectores = response.data[0].map((s: any) => ({
+            label: s.nombreSector,
+            value: s.idSector,
+          }));
+        }
+      },
+      () => {
+        this.sectores = [];
+      },
+      () => {
+        this.sectores = [];
+      }
+    );
+  }
+
+  private async loadSubsectores(idSector: number): Promise<void> {
+    this.commonsService.getWithHandling(
+      `CaracterizacionEmpresa/GetSubsectoresByIdSector/${idSector}`,
+      (response: any) => {
+        if (response?.ok && response?.data) {
+          console.log('Subsectores cargados:', response.data);
+          this.subsectores = response.data[0].map((sub: any) => ({
+            label: sub.nombreSubsector,
+            value: sub.idSubsector,
+          }));
+        } else {
+          this.subsectores = [];
+        }
+      },
+      () => {
+        this.subsectores = [];
+      },
+      () => {
+        this.subsectores = [];
+      }
+    );
   }
 }
