@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    apiUrl: 'https://localhost:7191/api/',
+    apiUrl: 'https://competitividadpymes.onrender.com/api/',
     localStoragetoken: 'token',
   };
   
