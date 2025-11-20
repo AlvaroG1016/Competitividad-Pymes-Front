@@ -77,7 +77,6 @@ export class CaracterizacionEmpresaComponent implements OnInit {
       address: this.dataCaracterizacion.direccion || '',
       institutionalEmail: this.dataCaracterizacion.correo || '',
       presencia: this.dataCaracterizacion.tiempoMercado || '',
-      clasificacion: this.dataCaracterizacion.clasificacionEmpresa || '',
       telefono: this.dataCaracterizacion.telefono || '',
     });
 
@@ -95,7 +94,6 @@ export class CaracterizacionEmpresaComponent implements OnInit {
         ],
       ],
       presencia: ['', [Validators.required, Validators.minLength(1)]],
-      clasificacion: ['', Validators.required],
       telefono: [
         '',
         [Validators.required, Validators.pattern(/^[0-9+\-\s\(\)]+$/)],
@@ -241,10 +239,6 @@ export class CaracterizacionEmpresaComponent implements OnInit {
         if (errors['required']) return 'El tiempo de presencia es requerido';
         break;
 
-      case 'clasificacion':
-        if (errors['required']) return 'Debe seleccionar la clasificación';
-        break;
-
       case 'institutionalEmail':
         if (errors['required']) return 'El correo institucional es requerido';
         if (errors['email'] || errors['pattern'])
@@ -316,8 +310,9 @@ export class CaracterizacionEmpresaComponent implements OnInit {
       direccion: formValue.address,
       correo: formValue.institutionalEmail,
       tiempoMercado: formValue.presencia,
-      clasificacionEmpresa: formValue.clasificacion,
       telefono: formValue.telefono,
+       idSector: formValue.sector,
+      idSubsector: formValue.subsector
     };
   }
 
